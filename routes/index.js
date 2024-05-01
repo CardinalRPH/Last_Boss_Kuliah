@@ -1,9 +1,40 @@
 import { Router } from 'express';
-import loginController from '../controllers/loginController.js';
 import { jwtController } from '../controllers/testController.js';
+import { sentToClient } from '../controllers/httpWebScoketController.js';
+import unloggedMid from '../middlewares/unloggedMid.js';
+import { deviceAuthPost, userAuthPost } from '../controllers/authController.js';
+import { userAccountDelete, userAccountGet, userAccountPost, userAccountPut, userVerifyPost } from '../controllers/accountController.js';
+import loggedMid from '../middlewares/loggedMid.js';
+import { foregetResetPasswordPost, forgetValidateEmailPost, forgetValidateTokenPost } from '../controllers/forgetPasswordController.js';
+import { deviceDelete, deviceGet, devicePost, devicePut, deviceWateringPost } from '../controllers/deviceController.js';
+
 const router = Router();
 
-router.post('/login', (req, res, next) => loginController(req, res, next))
+//test controller
 router.post('/jwt', (req, res, next) => jwtController(req, res, next))
+router.post('/sentWSClient', (req, res, next) => sentToClient(req, res, next))
+
+//login route
+router.post('/deviceLogin', (req, res, next) => unloggedMid(req, res, next), deviceAuthPost)
+router.post('/userLogin', (req, res, next) => unloggedMid(req, res, next), userAuthPost)
+
+//accountController
+router.post('/createAccount', (req, res, next) => unloggedMid(req, res, next), userAccountPost)
+router.post('/verifyAccount', (req, res, next) => loggedMid(req, res, next, true), userVerifyPost)
+router.get('/getAccount', (req, res, next) => loggedMid(req, res, next), userAccountGet)
+router.put('/updateAccount', (req, res, next) => loggedMid(req, res, next), userAccountPut)
+router.delete('/removeAccount', (req, res, next) => loggedMid(req, res, next), userAccountDelete)
+
+//forgetPasswordController
+router.post('/resetSendMail', (req, res, next) => unloggedMid(req, res, next), forgetValidateEmailPost)
+router.post('/resetValidate', (req, res, next) => unloggedMid(req, res, next), forgetValidateTokenPost)
+router.post('/resetAccountPass', (req, res, next) => unloggedMid(req, res, next), foregetResetPasswordPost)
+
+//device Controller
+router.get('/userDevice', (req, res, next) => loggedMid(req, res, next), deviceGet)
+router.post('/addDevice', (req, res, next) => loggedMid(req, res, next), devicePost)
+router.put('/updateDevice', (req, res, next) => loggedMid(req, res, next), devicePut)
+router.delete('/deleteDevice', (req, res, next) => loggedMid(req, res, next), deviceDelete)
+router.post('/doWatering', (req, res, next) => loggedMid(req, res, next), deviceWateringPost)
 
 export default router;

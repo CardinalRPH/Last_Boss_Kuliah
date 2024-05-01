@@ -1,2 +1,3 @@
 export const userSockets = []
-export const deviceSockets = {}
+export const messageStates = []
+export const waterStates = []

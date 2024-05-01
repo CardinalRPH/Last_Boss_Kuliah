@@ -10,6 +10,15 @@ export const encrypt = (text) => {
     return iv.toString('hex') + encrypted;
 }
 
+export const encryptToUniqueCode = (text) => {
+    const adjustedKey = process.env.ENCRYPTION_KEY.padEnd(32, '0').slice(0, 32);
+    const cipher = createCipheriv('aes-256-ecb', Buffer.from(adjustedKey), Buffer.alloc(0));
+    let encrypted = cipher.update(text, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    return encrypted.substring(0, 8); // Mengambil 8 karakter pertama sebagai kode unik
+}
+
+
 export const decrypt = (encryptedText) => {
     const adjustedKey = process.env.ENCRYPTION_KEY.padEnd(32, '0').slice(0, 32);
 

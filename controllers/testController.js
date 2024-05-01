@@ -1,3 +1,4 @@
+import { encrypt } from "../security/aesManager.js"
 import { generateToken } from "../security/jwtManager.js"
 
 export const jwtController = (req, res, next) => {
@@ -5,6 +6,10 @@ export const jwtController = (req, res, next) => {
     const token = generateToken({
         user, deviceId
     }, false, {})
-    res.status(200).json(token)
+    const encryptedemail = encrypt(user)
+    res.status(200).json({
+        path: encryptedemail,
+        token
+    })
 }
 
