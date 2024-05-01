@@ -8,7 +8,6 @@ import app from '../app.js';
 import debugLib from 'debug';
 const debug = debugLib('calendar-by-full-calendar:server');
 import { createServer } from 'http';
-import socketIOServer from '../webSocket/socketIOServer.js';
 import webSocketServer from '../webSocket/webSocketServer.js';
 
 /**
@@ -27,7 +26,6 @@ const server = createServer(app);
 /**
  * Create WebSocket server.
  */
-// socketIOServer(server)
 webSocketServer(server)
 
 /**
