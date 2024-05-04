@@ -5,7 +5,7 @@ import unloggedMid from '../middlewares/unloggedMid.js';
 import { deviceAuthPost, userAuthPost } from '../controllers/authController.js';
 import { userAccountDelete, userAccountGet, userAccountPost, userAccountPut, userVerifyPost } from '../controllers/accountController.js';
 import loggedMid from '../middlewares/loggedMid.js';
-import { foregetResetPasswordPost, forgetValidateEmailPost, forgetValidateTokenPost } from '../controllers/forgetPasswordController.js';
+import { foregetResetPasswordPost, forgetValidateEmailPost, forgetValidateTokenGet } from '../controllers/forgetPasswordController.js';
 import { deviceDelete, deviceGet, devicePost, devicePut, deviceWateringPost } from '../controllers/deviceController.js';
 
 const router = Router();
@@ -21,13 +21,15 @@ router.post('/userLogin', (req, res, next) => unloggedMid(req, res, next), userA
 //accountController
 router.post('/createAccount', (req, res, next) => unloggedMid(req, res, next), userAccountPost)
 router.post('/verifyAccount', (req, res, next) => loggedMid(req, res, next, true), userVerifyPost)
+// need to resend verify email
 router.get('/getAccount', (req, res, next) => loggedMid(req, res, next), userAccountGet)
 router.put('/updateAccount', (req, res, next) => loggedMid(req, res, next), userAccountPut)
 router.delete('/removeAccount', (req, res, next) => loggedMid(req, res, next), userAccountDelete)
 
 //forgetPasswordController
 router.post('/resetSendMail', (req, res, next) => unloggedMid(req, res, next), forgetValidateEmailPost)
-router.post('/resetValidate', (req, res, next) => unloggedMid(req, res, next), forgetValidateTokenPost)
+// need to resend resetPass email
+router.get('/resetValidate', (req, res, next) => unloggedMid(req, res, next), forgetValidateTokenGet)
 router.post('/resetAccountPass', (req, res, next) => unloggedMid(req, res, next), foregetResetPasswordPost)
 
 //device Controller

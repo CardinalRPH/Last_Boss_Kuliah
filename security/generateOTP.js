@@ -1,5 +1,5 @@
-import { randomInt } from 'crypto'
+import { randomBytes } from 'crypto'
 export default () => {
-    const OTP = randomInt(100000, 999999)
+    const OTP = randomBytes(32).toString('hex')
     return OTP
 }

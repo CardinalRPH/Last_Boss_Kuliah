@@ -6,15 +6,26 @@ import cors from 'cors'
 import indexRouter from './routes/index.js';
 import { configDotenv } from 'dotenv';
 import session from 'express-session';
+import rateLimit from 'express-rate-limit';
 configDotenv()
 
 const app = express();
 const __dirname = path.resolve();
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, //15 minutes
+    limit: 100,
+    handler: (req, res) => {
+        res.status(429).json({
+            message: "Too many requests, please try again later.",
+        });
+    }
+})
 
 app.use(logger('dev'));
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(limiter)
 app.use(cors({
     credentials: true,
     origin: `http://${process.env.FRONT_END_DOMAIN}`

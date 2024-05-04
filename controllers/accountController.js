@@ -48,7 +48,8 @@ export const userAccountPost = async (req, res) => {
             token: OTPToken
         })
         mailSender(userMail, 'verify', {
-            userName, payload: OTPToken
+            userName,
+            payload: `http://${process.env.FRONT_END_DOMAIN}/${token}`
         })
         const expireHours = 24 * 60 * 60 * 1000;
         req.session.userData = { name: userName, email: userMail, isVerified: false, id: existsUser.id };

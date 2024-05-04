@@ -17,13 +17,13 @@ export const getUserToken = async ({ email }) => {
     }
 }
 
-export const addUpdateUserToken = async ({ email, token }) => {
+export const addUpdateUserToken = async ({ email, token, expireMinutes = 5 }) => {
     const uniqueEmail = encryptToUniqueCode(email)
     const tokenCollection = fire.collection(collectionName)
 
     //define expire token
     const currentTime = new Date();
-    const expirationDate = new Date(currentTime.getTime() + (5 * 60000));
+    const expirationDate = new Date(currentTime.getTime() + (expireMinutes * 60000));
     try {
         const addUpdateToken = await tokenCollection.doc(uniqueEmail).set({
             token,
