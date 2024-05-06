@@ -1,22 +1,39 @@
 {
-  "name": "be",
-  "version": "0.0.0",
+  "name": "last-boss-kuliah-fe",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "node ./bin/www",
-    "dev": "nodemon .bin/www"
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
-    "dotenv": "^16.3.1",
-    "express": "^4.19.2",
-    "jsonwebtoken": "^9.0.2",
-    "morgan": "~1.9.1",
-    "nodemon": "^3.0.1",
-    "socket.io": "^4.7.5",
-    "ws": "^8.16.0"
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-regular-svg-icons": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@mui/material": "^5.15.16",
+    "@reduxjs/toolkit": "^2.2.3",
+    "axios-hooks": "^5.0.2",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-redux": "^9.1.1",
+    "react-router-dom": "^6.23.0",
+    "react-use-websocket": "^4.8.1"
   },
-  "type": "module"
+  "devDependencies": {
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "vite": "^5.2.0"
+  }
 }
