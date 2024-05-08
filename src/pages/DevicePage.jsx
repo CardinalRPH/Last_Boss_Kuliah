@@ -9,8 +9,8 @@ import DialogAlert from "../components/DialogAlert"
 
 const DevicePage = () => {
     const [modalState, setModalState] = useState(false)
-    const [alertState, setAlertState] = useState(false)
     const [dialogOpen, setDialogOpen] = useState(false)
+    const [alertState, setAlertState] = useState(false)
     const [alertComponent, setAlertComponent] = useState({
         severity: 'info',
         alertLabel: '',
@@ -33,6 +33,15 @@ const DevicePage = () => {
     const handleDelete = () => {
         
     }
+
+    const handleUpdateSave = ()=> {
+        setAlertState(true)
+        setAlertComponent({
+            severity: 'success',
+            alertLabel: 'Success',
+            content: 'Success add new Device'
+        })
+    }
     return (
         <>
             <Grid container spacing={3} justifyContent="center">
@@ -42,6 +51,7 @@ const DevicePage = () => {
                 <Grid item xs={12} >
                     <DeviceCard
                         onDelete={()=> setDialogOpen(true)}
+                        onSave={handleUpdateSave}
                     />
                 </Grid>
             </Grid>

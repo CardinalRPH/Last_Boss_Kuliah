@@ -11,6 +11,7 @@ import RootLayout from "../pages/layout/RootLayout"
 import DashboardPage from "../pages/DashboardPage"
 import DevicePage from "../pages/DevicePage"
 import ProfilePage from "../pages/ProfilePage"
+import DeviceDetailPage from "../pages/DeviceDetailPage"
 
 
 const AppRouter = createBrowserRouter([
@@ -60,9 +61,13 @@ const AppRouter = createBrowserRouter([
                 element: <DevicePage />
             },
             {
+                path: '/devices/:id',
+                element: <DeviceDetailPage />
+            },
+            {
                 path: '/profile',
                 element: <ProfilePage />
-            }
+            },
         ]
     }
 ])
