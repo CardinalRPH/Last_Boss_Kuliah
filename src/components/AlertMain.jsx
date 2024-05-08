@@ -1,11 +1,7 @@
 import { Alert, AlertTitle, Snackbar } from "@mui/material"
 import PropTypes from 'prop-types';
 
-<<<<<<< HEAD
 const AlertMain = ({ alertLabel, content, severity, onClose, open = false, anchorPosition={vertical:'top', horizontal:'center'} }) => {
-=======
-const AlertMain = ({ alertLabel, content, severity, onClose, open = false, anchorPosition }) => {
->>>>>>> 815e55c4a4a9f10e42dc33c7f2cb47be91a048a1
 
     return (
         <Snackbar

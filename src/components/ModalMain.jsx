@@ -1,11 +1,6 @@
-<<<<<<< HEAD
 import { Backdrop, Box, Fade, Modal } from "@mui/material"
 import PropTypes from 'prop-types';
 import Title from "./Title";
-=======
-import { Backdrop, Box, Fade, Modal, Typography } from "@mui/material"
-import PropTypes from 'prop-types';
->>>>>>> 815e55c4a4a9f10e42dc33c7f2cb47be91a048a1
 
 const style = {
     position: 'absolute',
@@ -36,13 +31,7 @@ const ModalMain = ({ open, onClose, children, modalTitle }) => {
         >
             <Fade in={open}>
                 <Box sx={style}>
-<<<<<<< HEAD
                     <Title> {modalTitle}</Title>
-=======
-                    <Typography id="modal-title" color='text.primary' variant="h6" component="h2">
-                        {modalTitle}
-                    </Typography>
->>>>>>> 815e55c4a4a9f10e42dc33c7f2cb47be91a048a1
                     {children}
                 </Box>
             </Fade>
