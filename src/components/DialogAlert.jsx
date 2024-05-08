@@ -20,7 +20,11 @@ const DialogAlert = ({ open=false, onClose, handleCancle, handleAccept, dialogTi
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
+<<<<<<< HEAD
                 <Button onClick={handleCancle}>Cancel</Button>
+=======
+                <Button onClick={handleCancle}>Batal</Button>
+>>>>>>> 815e55c4a4a9f10e42dc33c7f2cb47be91a048a1
                 <Button onClick={handleAccept} autoFocus>
                     Ok
                 </Button>

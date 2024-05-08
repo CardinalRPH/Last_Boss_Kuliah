@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Box, Button, Grid, TextField, Typography } from "@mui/material"
 import DeviceCard from "../components/DeviceCard"
 import AddNewDeviceButton from "../components/AddNewDeviceButton"
@@ -70,6 +71,22 @@ const DevicePage = () => {
                 <Typography>Are you sure to delete NAME item</Typography>
             </DialogAlert>
         </>
+=======
+import { Grid } from "@mui/material"
+import DeviceCard from "../components/DeviceCard"
+import AddNewDeviceButton from "../components/AddNewDeviceButton"
+
+const DevicePage = () => {
+    return (
+        <Grid container spacing={3} justifyContent="center">
+            <Grid item >
+                <AddNewDeviceButton />
+            </Grid>
+            <Grid item xs={12} >
+                <DeviceCard />
+            </Grid>
+        </Grid>
+>>>>>>> 815e55c4a4a9f10e42dc33c7f2cb47be91a048a1
     )
 }
 

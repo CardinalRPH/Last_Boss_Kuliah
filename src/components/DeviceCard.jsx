@@ -6,11 +6,17 @@ import { useState } from "react";
 
 const DeviceCard = ({ onGoTo, onDelete, deviceName = "", deviceId = "", onSave }) => {
     const [readOnly, setReadOnly] = useState(true)
+<<<<<<< HEAD
     const [defaultTextVal, setDefaultTextVal] = useState(deviceName)
     const [textValue, setTextValue] = useState(defaultTextVal)
 
     const saveChange = () => {
         setDefaultTextVal(textValue)
+=======
+    const [textValue, setTextValue] = useState(deviceName)
+
+    const saveChange = () => {
+>>>>>>> 815e55c4a4a9f10e42dc33c7f2cb47be91a048a1
         setReadOnly(true)
         onSave()
     }
@@ -43,11 +49,19 @@ const DeviceCard = ({ onGoTo, onDelete, deviceName = "", deviceId = "", onSave }
                 </Box>
                 {readOnly ? (
                     <IconButton onClick={() => setReadOnly(false)}>
+<<<<<<< HEAD
                         <FontAwesomeIcon icon={faPenToSquare} style={{ marginLeft: 1, marginRight: 1 }} />
                     </IconButton>
                 ) : (<>
                     <Button sx={{ mx: 1 }} onClick={saveChange}>Save</Button>
                     <Button sx={{ mx: 1 }} onClick={() => { setReadOnly(true); setTextValue(defaultTextVal) }}>Cancel</Button>
+=======
+                        <FontAwesomeIcon icon={faPenToSquare} size="md" style={{ marginLeft: 1, marginRight: 1 }} />
+                    </IconButton>
+                ) : (<>
+                    <Button sx={{ mx: 1 }} onClick={saveChange}>Save</Button>
+                    <Button sx={{ mx: 1 }} onClick={() => { setReadOnly(true); setTextValue(deviceName) }}>Cancel</Button>
+>>>>>>> 815e55c4a4a9f10e42dc33c7f2cb47be91a048a1
                 </>)}
 
             </Box>
