@@ -10,10 +10,7 @@ import MustVerifyPage from "../pages/MustVerifyPage"
 import RootLayout from "../pages/layout/RootLayout"
 import DashboardPage from "../pages/DashboardPage"
 import DevicePage from "../pages/DevicePage"
-<<<<<<< HEAD
 import ProfilePage from "../pages/ProfilePage"
-=======
->>>>>>> 815e55c4a4a9f10e42dc33c7f2cb47be91a048a1
 
 
 const AppRouter = createBrowserRouter([
@@ -61,13 +58,10 @@ const AppRouter = createBrowserRouter([
             {
                 path: '/devices',
                 element: <DevicePage />
-<<<<<<< HEAD
             },
             {
                 path: '/profile',
                 element: <ProfilePage />
-=======
->>>>>>> 815e55c4a4a9f10e42dc33c7f2cb47be91a048a1
             }
         ]
     }
