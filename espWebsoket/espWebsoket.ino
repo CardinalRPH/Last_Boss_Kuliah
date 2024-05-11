@@ -3,7 +3,9 @@
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
 #include <ArduinoJson.h>
-
+#include <BH1750.h>
+#include <Wire.h>
+// Fuzzy login untuk sensor cahaya dan kelembapan tanah
 WebSocketsClient webSocket;
 // Wifi Setup
 const char *ssid = "PARZ!VAL X";
@@ -17,23 +19,103 @@ const String password = "secret";
 const String host = "192.168.1.12";
 const int port = 5000;
 
+// setup pin
+#define LIGHT_SCL D1
+#define LIGHT_SDA D2
+#define ULTRA_TRIG D3
+#define ULTRA_ECHO D4
+#define RELAY_PIN D5
+#define RAIN_PIN_DO D6
+#define SOIL_PIN_1 D7
+#define SOIL_PIN_2 D8
+
+#define ANALOG_PIN A0
+
+#define BUZZ_PIN 16
+
+// Setup ultrasonic tank distance in cm
+int emptyTankDistance = 70;
+int fullTankDistance = 30;
+
 const int WSReconInterval = 5000;
 
 unsigned long lastMsgTime = 0;
 const unsigned long interval = 1000;
 const unsigned long interval2 = 5000;
-// to do
-// neeed to re consturct
-// this is only sent and read the message webscoket
-// cant rewrite data and send it again
-// on watering then it will update like sensor do update
 
 JsonDocument docToSent;
 int httpResponseCode;
 bool isWatering = false;
 unsigned long previousMillis = 0;
 
-String handleWatering(bool manual = false)
+int soil1Val;
+int soil2Val;
+
+float durationUltra;
+float distanceUltra;
+
+BH1750 lightMeter;
+
+bool isRaining()
+{
+  int rainState = digitalRead(RAIN_PIN_DO);
+
+  if (rainState == HIGH)
+  {
+    return true;
+  }
+  return false;
+}
+
+int readSoil1()
+{
+  digitalWrite(SOIL_PIN_1, HIGH);
+  digitalWrite(SOIL_PIN_2, LOW);
+  // return in percentage
+  float moisturePercentage = 100.00 - ((analogRead(ANALOG_PIN) / 1023.00) * 100.00);
+  return moisturePercentage;
+}
+
+int readSoil2()
+{
+  digitalWrite(SOIL_PIN_2, HIGH);
+  digitalWrite(SOIL_PIN_1, LOW);
+  // return in percentage
+  float moisturePercentage = 100.00 - ((analogRead(ANALOG_PIN) / 1023.00) * 100.00);
+  return moisturePercentage;
+}
+
+int readTankValue()
+{
+  digitalWrite(ULTRA_TRIG, LOW);
+  nonBlockingDelay(2);
+  digitalWrite(ULTRA_TRIG, HIGH);
+  nonBlockingDelay(20);
+  digitalWrite(ULTRA_TRIG, LOW);
+
+  durationUltra = pulseIn(ULTRA_ECHO, HIGH);
+  // read in cm
+  distanceUltra = ((durationUltra / 2) * 0.343) / 10;
+  // read in percentage
+  int percentage = (1 - (distanceUltra / emptyTankDistance)) * 100;
+  return percentage;
+}
+
+int readLightlux(){
+  float lux = lightMeter.readLightLevel();
+  // read in lux or lx
+  return lux;
+}
+
+void nonBlockingDelay(unsigned long delayMillis)
+{
+  unsigned long startMillis = millis();
+  while (millis() - startMillis < delayMillis)
+  {
+  }
+}
+
+bool handleWatering(bool manual = false)
 {
   if (manual)
   {
@@ -44,7 +126,7 @@ String handleWatering(bool manual = false)
     digitalWrite(BUILTIN_LED, HIGH);
     previousMillis = currentMillis; // Tetapkan previousMillis saat ini
   }
-  
+
   // Periksa apakah masih dalam proses penyiraman
   if (isWatering)
   {
@@ -56,14 +138,13 @@ String handleWatering(bool manual = false)
       digitalWrite(BUILTIN_LED, LOW);
       isWatering = false;
     }
-    return "isNow";
+    return true;
   }
-  
+
   // Periksa kondisi tanah dan lakukan penyiraman jika diperlukan
   // Lakukan pengecekan dan pengiriman ke server di sini
-  return "";
+  return false;
 }
-
 
 void handleWsMessage(JsonDocument wsData)
 {
@@ -158,21 +239,11 @@ void handleSentMsgActivity()
 
   docToSent.clear(); // Bersihkan obj1
   JsonObject obj1 = docToSent.to<JsonObject>();
-  JsonArray array1 = obj1.createNestedArray("data");
-  JsonObject obj2 = array1.createNestedObject();
+  JsonObject obj2 = obj1.createNestedObject("data");
 
   obj1["type"] = "message";
-
   obj2["id"] = WiFi.macAddress();
-
-  if (handleWatering() == "")
-  {
-    obj2["event"] = nullptr; // Mengganti NULL dengan nullptr
-  }
-  else
-  {
-    obj2["event"] = "watering";
-  }
+  obj2["waterEvent"] = handleWatering();
 
   obj2["sensor1"] = "from sensor1";
 
@@ -265,9 +336,19 @@ void initWebSocket(String WSPath, String WSHeaderToken)
 void setup()
 {
   // put your setup code here, to run once:
-  pinMode(BUILTIN_LED, OUTPUT);
-  // digitalWrite(LED_BUILTIN, LOW);
   Serial.begin(9600);
+  // setup pinMode
+  pinMode(BUILTIN_LED, OUTPUT);
+  pinMode(RAIN_PIN_DO, INPUT);
+  pinMode(RELAY_PIN, OUTPUT);
+  pinMode(SOIL_PIN_1, OUTPUT);
+  pinMode(SOIL_PIN_2, OUTPUT);
+  pinMode(ULTRA_TRIG, OUTPUT);
+  pinMode(ULTRA_ECHO, INPUT);
+
+  Wire.begin(LIGHT_SDA, LIGHT_SCL);
+  lightMeter.begin();
+  // digitalWrite(LED_BUILTIN, LOW);
   initWifi();
   initHTTP();
 }
