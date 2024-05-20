@@ -30,7 +30,7 @@ const DashShortcutCard = ({ deviceName = 'zero', onWatering, isRain = false, las
                 </Grid>
                 <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', textAlign: 'center' }}>
                     <FontAwesomeIcon icon={faFaucetDrip} size="2xl" style={{ marginTop: 1, marginBottom: 1 }} />
-                    <Typography variant="body1" sx={{ my: 1 }}>Last Watering</Typography>
+                    <Typography variant="body1" sx={{ my: 1 }}>Today Last Watering</Typography>
                     <Typography variant="h6" sx={{ my: 1 }}>{lastWaterDay}, {lastWaterHour}</Typography>
                 </Grid>
                 <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', textAlign: 'center' }}>

@@ -13,7 +13,7 @@ const RenderError = () => {
             <Box sx={{ height: '60%', textAlign: 'center' }}>
                 <Typography variant="body1">Link Expired</Typography>
                 <Typography variant="body1">Try again to send the reset link</Typography>
-                <Link variant="button" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' }}>
+                <Link variant="button" sx={{ display: 'flex', m: 1, justifyContent: 'center', alignItems: 'center', cursor: 'pointer' }}>
                     <Typography sx={{ mx: 1 }}>
                         Try Again
                     </Typography>

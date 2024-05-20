@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material"
 import PropTypes from 'prop-types';
 
-const DialogAlert = ({ open=false, onClose, handleCancle, handleAccept, dialogTitle, children }) => {
+const DialogAlert = ({ open = false, onClose, handleCancle, handleAccept, dialogTitle, children, disableCancelBtn=false, disableAccBtn=false, customAccBtn='Ok' }) => {
     return (
         <Dialog
             open={open}
@@ -20,9 +20,9 @@ const DialogAlert = ({ open=false, onClose, handleCancle, handleAccept, dialogTi
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleCancle}>Cancel</Button>
-                <Button onClick={handleAccept} autoFocus>
-                    Ok
+                <Button disabled={disableCancelBtn} onClick={handleCancle}>Cancel</Button>
+                <Button disabled={disableAccBtn} onClick={handleAccept} autoFocus>
+                  {customAccBtn}
                 </Button>
             </DialogActions>
         </Dialog>
@@ -35,7 +35,10 @@ DialogAlert.propTypes = {
     handleCancle: PropTypes.func,
     handleAccept: PropTypes.func,
     dialogTitle: PropTypes.string,
-    children: PropTypes.node
+    children: PropTypes.node,
+    disableAccBtn: PropTypes.bool,
+    disableCancelBtn: PropTypes.bool,
+    customAccBtn:PropTypes.node
 }
 
 export default DialogAlert

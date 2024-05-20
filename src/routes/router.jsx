@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom"
+import { Navigate, createBrowserRouter } from "react-router-dom"
 import SignInPage from "../pages/SignInPage"
 import SignUpPage from "../pages/SignUpPage"
 import VerifyPage from "../pages/VerifyPage"
@@ -12,11 +12,22 @@ import DashboardPage from "../pages/DashboardPage"
 import DevicePage from "../pages/DevicePage"
 import ProfilePage from "../pages/ProfilePage"
 import DeviceDetailPage from "../pages/DeviceDetailPage"
+import AuthGuard from "../services/AuthGuard"
+import NotAuthGuard from "../services/NotAuthGuard"
+import NoValidGuard from "../services/NoValidGuard"
 
 
 const AppRouter = createBrowserRouter([
     {
-        element: <AuthLayout />,
+        path: '/',
+        element: <Navigate to='/dashboard' replace />
+    },
+    {
+        element: (
+            <NotAuthGuard>
+                <AuthLayout />
+            </NotAuthGuard>
+        ),
         children: [
             {
                 path: '/signin',
@@ -29,11 +40,17 @@ const AppRouter = createBrowserRouter([
         ]
     },
     {
-        path: '/verify',
-        element: <VerifyPage />
+        path: '/verify/:pathToken',
+        element: (
+            <VerifyPage />
+        )
     },
     {
-        element: <ResetPassLayout />,
+        element: (
+            <NotAuthGuard>
+                <ResetPassLayout />
+            </NotAuthGuard>
+        ),
         children: [
             {
                 path: '/lost-password',
@@ -46,11 +63,19 @@ const AppRouter = createBrowserRouter([
         ]
     },
     {
-        path: '/access-denied',
-        element: <MustVerifyPage />
+        path: '/access-verify',
+        element: (
+            <NoValidGuard>
+                <MustVerifyPage />
+            </NoValidGuard>
+        )
     },
     {
-        element: <RootLayout />,
+        element: (
+            <AuthGuard>
+                <RootLayout />
+            </AuthGuard>
+        ),
         children: [
             {
                 path: '/dashboard',

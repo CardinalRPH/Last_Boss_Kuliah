@@ -1,25 +1,79 @@
-import { Badge, Box, Container, CssBaseline, Divider, IconButton, List, Toolbar, Typography } from "@mui/material"
-import { Outlet, useLocation } from "react-router-dom"
+import { Box, CircularProgress, Container, CssBaseline, Divider, IconButton, List, Toolbar, Typography } from "@mui/material"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import AppBarComponent from "../../components/AppBarComponent"
 import DrawerComponent from "../../components/DrawerComponent"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faBars, faChevronLeft } from "@fortawesome/free-solid-svg-icons"
 import { MainListItems, SignOutListItems } from "../../components/ListItemDrawer"
 import drawerMainRoute from "../../utilities/drawerMainRoute"
 import DialogAlert from "../../components/DialogAlert"
+import { useDispatch, useSelector } from "react-redux"
+import { authAction } from "../../stores/authState"
+import { cdAction } from "../../stores/countDownState"
+import { validAction } from "../../stores/validState"
+import { useDelete } from "../../hooks/dataHandler"
+import AlertMain from "../../components/AlertMain"
 
 const RootLayout = () => {
     const [open, setOpen] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false)
+    const [alertState, setAlertState] = useState(false)
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const location = useLocation()
+    const { payload, isAuthenticated } = useSelector(state => state.auth)
+    const { data, loading, error, execute } = useDelete('/logOut')
+    const [alertComponent, setAlertComponent] = useState({
+        severity: 'info',
+        alertLabel: '',
+        content: ''
+    })
+
     const toggleDrawer = () => {
         setOpen(!open);
     };
 
     const handleSignOut = () => {
-        setDialogOpen(false)
+        if (isAuthenticated) {
+            execute({
+                data: {
+                    userMail: payload?.email
+                }
+            })
+        }
     }
-    const location = useLocation()
+
+    const handleDialogOpen = () => {
+        if (isAuthenticated) {
+            setDialogOpen(true)
+        }
+    }
+
+    useEffect(() => {
+        if (data) {
+            //do data
+            setDialogOpen(false)
+            dispatch(authAction.logout())
+            dispatch(cdAction.removeCd())
+            dispatch(validAction.setSignUpState(false))
+            navigate('/signin', { replace: true })
+        }
+    }, [data, dispatch, navigate])
+
+    useEffect(() => {
+        if (error) {
+            //do 
+            setAlertComponent({
+                severity: 'error',
+                alertLabel: 'Error',
+                content: error.response?.data.error || error.message
+            })
+            setAlertState(true)
+        }
+    }, [error])
+
+
     return (
         <>
             <Box sx={{ width: '100%', minHeight: '100vh', display: 'flex' }}>
@@ -51,11 +105,7 @@ const RootLayout = () => {
                         >
                             {drawerMainRoute.find(value => location.pathname.includes(value.route)).name}
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                D
-                            </Badge>
-                        </IconButton>
+                        <Typography variant="h6">{payload?.name.split(' ')[0] || 'null'}</Typography>
                     </Toolbar>
                 </AppBarComponent>
                 <DrawerComponent variant="permanent" open={open}>
@@ -75,7 +125,7 @@ const RootLayout = () => {
                     <List sx={{ overflow: 'hidden' }}>
                         <MainListItems pathName={location.pathname} />
                         <Divider />
-                        <SignOutListItems onClick={() => setDialogOpen(true)} />
+                        <SignOutListItems onClick={handleDialogOpen} />
                     </List>
                 </DrawerComponent>
                 <Box
@@ -93,9 +143,25 @@ const RootLayout = () => {
                     </Container>
                 </Box>
             </Box >
-            <DialogAlert open={dialogOpen} onClose={() => setDialogOpen(false)} handleCancle={() => setDialogOpen(false)} dialogTitle="Sign Out" handleAccept={handleSignOut}>
+            <DialogAlert
+                open={dialogOpen}
+                onClose={() => !loading && setDialogOpen(false)}
+                handleCancle={() => setDialogOpen(false)}
+                dialogTitle="Sign Out"
+                handleAccept={handleSignOut}
+                disableAccBtn={loading}
+                disableCancelBtn={loading}
+                customAccBtn={loading?<CircularProgress size={27}/>:'Ok'}
+            >
                 <Typography>Are you sure to sign out</Typography>
             </DialogAlert>
+            <AlertMain
+                open={alertState}
+                onClose={() => setAlertState(false)}
+                alertLabel={alertComponent.alertLabel}
+                severity={alertComponent.severity}
+                content={alertComponent.content}
+            />
         </>
     )
 }
