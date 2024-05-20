@@ -40,10 +40,6 @@ export const deleteUserToken = async ({ email }) => {
     const uniqueEmail = encryptToUniqueCode(email)
     const tokenCollection = fire.collection(collectionName)
     try {
-        const snapshot = await tokenCollection.doc(uniqueEmail).get()
-        if (!snapshot.exists) {
-            return false
-        }
         const deletedToken = await tokenCollection.doc(uniqueEmail).delete()
         return { id: uniqueEmail, data: deletedToken }
     } catch (error) {

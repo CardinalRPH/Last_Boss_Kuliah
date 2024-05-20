@@ -124,7 +124,9 @@ export default (server) => {
                         roomIndex.message = data
                     }
                     const waterStateIndex = waterRoom.member.indexOf(waterRoom.member.find(value => value.id == deviceId))
-                    const deviceWater = data.find(value => value.event === "watering" && value.id === deviceId)
+                    console.log(data);
+                   
+                    const deviceWater = data?.waterEvent === true && data.id === deviceId
                     if (deviceWater && waterStateIndex !== -1 && waterRoom.member[waterStateIndex].water === false) {
                         //save watering into db
                         await saveDeviceWatering(decode, deviceId)

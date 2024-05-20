@@ -35,8 +35,8 @@ export const userAuthPost = async (req, res) => {
     //do the controller logic
     const userData = await getUserbyId({ email: userMail })
     if (!userData) {
-        res.status(401).json({
-            error: 'Wrong email or password!'
+        res.status(404).json({
+            error: 'User not Found'
         })
         return
     }
@@ -44,7 +44,7 @@ export const userAuthPost = async (req, res) => {
     const passCompare = await Bcompare(userPass, userData.data.password)
     if (!passCompare) {
         res.status(401).json({
-            error: 'Wrong email or password!'
+            error: 'Wrong password!'
         })
         return
     }
@@ -54,9 +54,8 @@ export const userAuthPost = async (req, res) => {
     const expirationDate = new Date(Date.now() + expireHours);
     req.session.cookie.expires = expirationDate;
     req.session.cookie.maxAge = expireHours;
-    console.log(req.session);
     res.status(200).json({
-        name: userData.data.name, email: userData.data.email
+        name: userData.data.name, email: userData.data.email, valid:userData.data.isVerified
     })
 }
 

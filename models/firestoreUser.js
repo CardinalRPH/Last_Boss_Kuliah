@@ -21,21 +21,12 @@ export const addNewUser = async ({ email, name, password }) => {
     }
 }
 
-export const updateUser = async ({ email, name, password }) => {
+export const updateUser = async ({ email, payload }) => {
     const uniqueEmail = encryptToUniqueCode(email)
     const userCollection = fire.collection(collectionName)
     try {
-        const snapshot = await userCollection.doc(uniqueEmail).get()
-        if (!snapshot.exists) {
-            return false;
-        }
-        if (password === "") {
-            const updatedUser = await userCollection.doc(uniqueEmail).update({ name })
-            return { id: uniqueEmail, data: updatedUser }
-        } else {
-            const updatedUser = await userCollection.doc(uniqueEmail).update({ password })
-            return { id: uniqueEmail, data: updatedUser }
-        }
+        const updatedUser = await userCollection.doc(uniqueEmail).update(payload)
+        return { id: uniqueEmail, data: updatedUser }
     } catch (error) {
         console.error("Firebase Error:", error);
         throw error;
@@ -45,10 +36,6 @@ export const updateUserVerify = async ({ email, verified = false }) => {
     const uniqueEmail = encryptToUniqueCode(email)
     const userCollection = fire.collection(collectionName)
     try {
-        const snapshot = await userCollection.doc(uniqueEmail).get()
-        if (!snapshot.exists) {
-            return false;
-        }
         const updatedUser = await userCollection.doc(uniqueEmail).update({
             isVerified: verified
         })

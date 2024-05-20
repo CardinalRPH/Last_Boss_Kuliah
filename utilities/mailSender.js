@@ -18,7 +18,7 @@ const verifyEmailHtml = (userName, urlVerif) => {
     <h2>Email Verification</h2>
     <p>Dear ${userName},</p>
     <p>Thank you for registering. To complete your registration, please use the following verification link:</p>
-    <a href=${urlVerif} style="background-color: #f0f0f0; padding: 10px; border-radius: 5px; display: inline-block;">Reset Password</a>
+    <a href=${urlVerif} style="background-color: #f0f0f0; padding: 10px; border-radius: 5px; display: inline-block;">Verify Email</a>
     <p>The verification code will expire within 5 minutes of receiving this message</p>
     <p>If you didn't register, please ignore this email.</p>
     <p>Best regards,<br>Smart Vertical Garden Team</p>

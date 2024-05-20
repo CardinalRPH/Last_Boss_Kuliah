@@ -211,6 +211,8 @@ export const foregetResetPasswordPost = async (req, res) => {
             res.status(404).json({ error: 'User not found' })
             return
         }
+        
+        req.session.destroy()
         res.status(200).json({
             data: updatedUser.data
         })

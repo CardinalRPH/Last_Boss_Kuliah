@@ -1,7 +1,8 @@
 import { addUpdateUserToken, deleteUserToken, getUserToken } from "../models/fireStoreToken.js"
 import { addNewUser, deleteUser, getUserbyId, updateUser, updateUserVerify } from "../models/firestoreUser.js"
-import { Bhash } from "../security/bcryptPassword.js"
+import { Bcompare, Bhash } from "../security/bcryptPassword.js"
 import generateOTP from "../security/generateOTP.js"
+import { generateToken, verifyToken } from "../security/jwtManager.js"
 import contentValidation from "../security/validations/contentValidation.js"
 import isEmailValid from "../security/validations/isEmailValid.js"
 import mailSender from "../utilities/mailSender.js"
@@ -47,9 +48,15 @@ export const userAccountPost = async (req, res) => {
             email: userMail,
             token: OTPToken
         })
+        const token = generateToken({
+            email: userMail,
+            token: OTPToken
+        }, false, {
+            expireMinutes: 10
+        })
         mailSender(userMail, 'verify', {
             userName,
-            payload: `http://${process.env.FRONT_END_DOMAIN}/${token}`
+            payload: `http://${process.env.FRONT_END_DOMAIN}/verify/${token}`
         })
         const expireHours = 24 * 60 * 60 * 1000;
         req.session.userData = { name: userName, email: userMail, isVerified: false, id: existsUser.id };
@@ -59,15 +66,75 @@ export const userAccountPost = async (req, res) => {
         req.session.cookie.maxAge = expireHours;
         res.status(200).json({
             data: {
-                name: userName, email: userMail
+                name: userName, email: userMail, valid: false
             }
         })
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ error: "Server error. Please try again later." });
     }
-
 }
+
+export const userAccSendVerifPost = async (req, res) => {
+    const { userMail } = req.body
+    if (!userMail) {
+        res.status(400).json({
+            error: "Missing Data!"
+        })
+        return
+    }
+    const validContent = contentValidation(req.body, {
+        userMail: 'string',
+    })
+    if (validContent !== null) {
+        res.status(400).json({
+            error: validContent
+        })
+        return
+    }
+    if (!isEmailValid(userMail)) {
+        res.status(400).json({
+            error: "Email not Valid"
+        })
+        return
+    }
+
+    try {
+        const existsUser = await getUserbyId({ email: userMail })
+        if (!existsUser) {
+            res.status(404).json({ error: 'User not found' })
+            return
+        }
+        if (existsUser.data.isVerified) {
+            res.status(400).json({ error: 'User already verified' })
+            return
+        }
+        const OTPToken = generateOTP()
+        await addUpdateUserToken({
+            email: userMail,
+            token: OTPToken
+        })
+        const token = generateToken({
+            email: userMail,
+            token: OTPToken
+        }, false, {
+            expireMinutes: 10
+        })
+        mailSender(userMail, 'verify', {
+            userName: existsUser.data.name,
+            payload: `http://${process.env.FRONT_END_DOMAIN}/verify/${token}`
+        })
+        res.status(200).json({
+            data: {
+                name: existsUser.data.name, email: userMail
+            }
+        })
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Server error. Please try again later." });
+    }
+}
+
 export const userAccountGet = async (req, res) => {
     //on login in profile
     const { userMail } = req.query
@@ -94,7 +161,7 @@ export const userAccountGet = async (req, res) => {
 
 export const userAccountPut = async (req, res) => {
     // only for edit password
-    const { userMail, userName, userPass = "" } = req.body
+    const { userMail, userName, userNewPass = "", userOldPass = "" } = req.body
 
     //validating
     if (!userName) {
@@ -105,7 +172,8 @@ export const userAccountPut = async (req, res) => {
     }
     const validContent = contentValidation(req.query, {
         userName: 'string',
-        userPass: 'string'
+        userNewPass: 'string',
+        userOldPass: 'string'
     })
     if (validContent !== null) {
         res.status(400).json({
@@ -116,14 +184,26 @@ export const userAccountPut = async (req, res) => {
 
     //do the logic controller
     try {
-        const updatedUser = await updateUser({ email: userMail, name: userName, password: userPass })
-        if (!updatedUser) {
+        const existsUser = await getUserbyId({ email: userMail })
+        if (!existsUser) {
             res.status(404).json({ error: 'User not found' })
             return
         }
-        res.status(200).json({
-            data: updatedUser.data
-        })
+        let updatedUser
+        if (userNewPass === "" && userOldPass === "") {
+            //only update username
+            updatedUser = await updateUser({ email: userMail, payload: { name: userName } })
+        } else {
+            //update username, and password
+            const isMatched = await Bcompare(userOldPass, existsUser.data.password)
+            if (!isMatched) {
+                res.status(401).json({ error: "Wrong Password" })
+                return
+            }
+            const hashedPassword = await Bhash(userNewPass)
+            updatedUser = await updateUser({ email: userMail, payload: { name: userName, password: hashedPassword } })
+        }
+        res.status(200).json({ data: updatedUser.data })
 
     } catch (error) {
         console.error("Error:", error);
@@ -148,18 +228,18 @@ export const userAccountDelete = async (req, res) => {
     })
 }
 
-export const userVerifyPost = async (req, res) => {
+export const userVerifyGet = async (req, res) => {
     //verify User
-    const { userMail, userOTP } = req.body
-    //validating
-    if (!userOTP) {
+    const { token } = req.query
+    //validation
+    if (!token) {
         res.status(400).json({
             error: "Missing Data!"
         })
         return
     }
     const validContent = contentValidation(req.body, {
-        userOTP: 'string',
+        token: 'string',
     })
     if (validContent !== null) {
         res.status(400).json({
@@ -167,24 +247,31 @@ export const userVerifyPost = async (req, res) => {
         })
         return
     }
-    // do logic controller
+
+    const validToken = verifyToken(token, false)
+    if (!validToken) {
+        res.status(403).json({ error: 'Forbidden - Token Expire or Wrong' })
+        return
+    }
+    const { email, token: userToken } = validToken
+
+    if (!isEmailValid(email)) {
+        res.status(400).json({
+            error: "Email not Valid"
+        })
+        return
+    }
+
     try {
-        const existsUser = await getUserbyId({ email: userMail })
-        if (!existsUser) {
-            res.status(404).
-                json({
-                    error: `The mail ${userMail} does not exist.`
-                })
-            return
-        }
-        const existToken = await getUserToken({ email: userMail })
+        const existToken = await getUserToken({ email })
+
         if (!existToken) {
-            res.status(404).
-                json({
-                    error: `This account is not registered with OTP`
-                })
+            res.status(404).json({
+                error: 'Data not found'
+            })
             return
         }
+
         const { token: tokenDB, expire } = existToken.data
 
         const nowTime = new Date()
@@ -194,23 +281,70 @@ export const userVerifyPost = async (req, res) => {
             })
             return
         }
-        if (tokenDB.toString() !== userOTP) {
+        if (tokenDB.toString() !== userToken) {
             res.status(401).json({
                 error: 'Wrong Token'
             })
             return
         }
 
-        //update verified on db and delete  the token  from db
-        await updateUserVerify({ email: userMail, verified: true })
-        await deleteUserToken({ email: userMail })
-
-        //update session verified
-        req.session.userData = { ...req.session.userData, isVerified: true };
+        await updateUserVerify({ email, verified: true })
+        await deleteUserToken({ email })
+        if (req.session.userData && req.session.userData.email === email) {
+            req.session.userData = { ...req.session.userData, isVerified: true }
+        } else {
+            req.session.destroy()
+        }
 
         res.status(200).json({
             data: {
-                name: existsUser.data.name, email: existsUser.data.email
+                email, valid: true
+            }
+        })
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Server error. Please try again later." });
+    }
+}
+
+export const userSignOutDelete = async (req, res) => {
+    const { userMail } = req.body
+
+    try {
+        const existsUser = await getUserbyId({ email: userMail })
+        if (!existsUser) {
+            res.status(404).json({ error: 'User not found' })
+            return
+        }
+
+        req.session.destroy()
+
+        res.status(200).json({
+            data: {
+                status: 'Loged Out'
+            }
+        })
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Server error. Please try again later." });
+    }
+}
+
+export const userCheckVerify = async (req, res) => {
+    const { userMail } = req.query
+    try {
+        const existsUser = await getUserbyId({ email: userMail })
+        if (!existsUser) {
+            res.status(404).json({ error: 'User not found' })
+            return
+        }
+        if (req.session.userData) {
+            req.session.userData = { ...req.session.userData, isVerified: true }
+        }
+        res.status(200).json({
+            data: {
+                email: userMail,
+                valid: existsUser.data.isVerified
             }
         })
     } catch (error) {

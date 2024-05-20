@@ -7,6 +7,8 @@ import indexRouter from './routes/index.js';
 import { configDotenv } from 'dotenv';
 import session from 'express-session';
 import rateLimit from 'express-rate-limit';
+import { FirestoreStore } from '@google-cloud/connect-firestore';
+import fire from './config/firestore.js';
 configDotenv()
 
 const app = express();
@@ -31,6 +33,10 @@ app.use(cors({
     origin: `http://${process.env.FRONT_END_DOMAIN}`
 }))
 app.use(session({
+    store: new FirestoreStore({
+        dataset: fire,
+        kind: 'express-sessions'
+    }),
     secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: true,

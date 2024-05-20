@@ -1,7 +1,7 @@
 import fire from "../config/firestore.js"
 import { encryptToUniqueCode } from "../security/aesManager.js"
 
-const collectionName = 'tokens'
+const collectionName = 'devices'
 const subcollectionName = 'userDevices'
 
 export const getAllUserDevice = async ({ email }) => {
@@ -12,9 +12,13 @@ export const getAllUserDevice = async ({ email }) => {
         if (snapshot.empty) {
             return false
         }
+        const snnapData = []
+        snapshot.forEach(doc => {
+            snnapData.push({deviceId:doc.id, ...doc.data()})
+        })
         return {
             id: uniqueEmail,
-            data: snapshot
+            data: snnapData
         }
     } catch (error) {
         console.error("Firebase Error:", error);

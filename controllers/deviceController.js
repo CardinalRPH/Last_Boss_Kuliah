@@ -55,12 +55,12 @@ export const deviceGet = async (req, res) => {
     }
 }
 
-export const devicePost = (req, res) => {
+export const devicePost = async (req, res) => {
     // add a new Device to DB
     const { deviceName, deviceId, userMail } = req.body
 
     //validating
-    if (!deviceName || deviceId) {
+    if (!deviceName || !deviceId) {
         res.status(400).json({
             error: "Missing Data!"
         })
@@ -82,7 +82,7 @@ export const devicePost = (req, res) => {
 
     //do the logic controller
     try {
-        const newDevice = addNewDevice({
+        const newDevice = await addNewDevice({
             email: userMail,
             deviceId,
             deviceData: {
