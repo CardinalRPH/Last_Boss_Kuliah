@@ -141,7 +141,8 @@ export default (server) => {
                         //broadcast message in room
                         findRoom.member.forEach((client) => {
                             if (client.id === decode) {
-                                client.ws.send(JSON.stringify(parsedData))
+                                client.ws.send(JSON.stringify(data))
+                                return
                             }
                         })
                     }

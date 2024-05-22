@@ -50,12 +50,21 @@ export const userAuthPost = async (req, res) => {
     }
     const expireHours = keepSignIn ? 24 * 60 * 60 * 1000 * 60 : 24 * 60 * 60 * 1000;
     req.session.userData = { name: userData.data.name, email: userData.data.email, isVerified: userData.data.isVerified, id: userData.id };
-
     const expirationDate = new Date(Date.now() + expireHours);
     req.session.cookie.expires = expirationDate;
     req.session.cookie.maxAge = expireHours;
+
+    const encryptedPath = encrypt(userData.data.email)
+    const token = generateToken({
+        user: userData.data.email,
+        deviceId: null
+    }, false, {})
+
     res.status(200).json({
-        name: userData.data.name, email: userData.data.email, valid:userData.data.isVerified
+        name: userData.data.name,
+        email: userData.data.email,
+        valid: userData.data.isVerified,
+        wsPath: `/app/${encryptedPath}/${token}`
     })
 }
 
