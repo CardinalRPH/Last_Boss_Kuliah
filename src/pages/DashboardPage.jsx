@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import { useGet } from "../hooks/dataHandler"
 import { useSelector } from "react-redux"
 import getCurrentTime from "../utilities/getCurrentTime"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useOutletContext } from "react-router-dom"
 
 const DashboardPage = () => {
   const [alertState, setAlertState] = useState(false)
@@ -14,6 +14,7 @@ const DashboardPage = () => {
   const [deviceData, setDeviceData] = useState([])
   const [totalDevice, SetTotalDevice] = useState(0)
   const { payload, isAuthenticated } = useSelector(state => state.auth)
+  const { wsMessage } = useOutletContext()
   const { day } = getCurrentTime()
   const navigate = useNavigate()
   const [alertComponent, setAlertComponent] = useState({
@@ -72,8 +73,8 @@ const DashboardPage = () => {
               lastWaterDay={day}
               lastWaterHour={value.waterVal[day].data.reverse()[0] || '00:00'}
               //from ws
-              isRain={false}
-              waterStorage={50}
+              isRain={wsMessage?.rainSensor || false}
+              waterStorage={wsMessage?.waterSensor || 0}
               //function
               onIconClick={() => navigate(`/devices/${value.deviceId}`)}
               onWatering={() => handleWatering(value.deviceId)}

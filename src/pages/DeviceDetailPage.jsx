@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Grid, Typography } from "@mui/material"
-import { useParams } from "react-router-dom"
+import { useOutletContext, useParams } from "react-router-dom"
 import DetailPageRainCard from "../components/DeviceDetailCard/DetailPageRainCard"
 import DetailPageLastWaterCard from "../components/DeviceDetailCard/DetailPageLastWaterCard"
 import DetailPageWaterStorageCard from "../components/DeviceDetailCard/DetailPageWaterStorageCard"
@@ -16,6 +16,7 @@ const DeviceDetailPage = () => {
     const { payload, isAuthenticated } = useSelector(state => state.auth)
     const [alertState, setAlertState] = useState(false)
     const [mainData, setMainData] = useState({})
+    const { wsMessage } = useOutletContext()
     const { data: dataGet, error: errorGet, loading: loadingGet, execute: executeGet } = useGet('userDevice', true, false)
     const { day } = getCurrentTime()
     const [alertComponent, setAlertComponent] = useState({
@@ -75,7 +76,7 @@ const DeviceDetailPage = () => {
                         </Grid>
                         {/* from webSocket */}
                         <Grid item xs={12} md={3}>
-                            <DetailPageRainCard value={false} />
+                            <DetailPageRainCard value={wsMessage?.rainSensor || false} />
                         </Grid>
                         {/* from DB */}
                         <Grid item xs={12} md={3}>
@@ -83,7 +84,7 @@ const DeviceDetailPage = () => {
                         </Grid>
                         {/* from webSocket */}
                         <Grid item xs={12} md={3}>
-                            <DetailPageWaterStorageCard value={50} />
+                            <DetailPageWaterStorageCard value={wsMessage?.waterSensor || 0} />
                         </Grid>
                         {/* function */}
                         <Grid item xs={12} md={3}>

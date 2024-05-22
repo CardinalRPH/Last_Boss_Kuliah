@@ -14,6 +14,9 @@ import { cdAction } from "../../stores/countDownState"
 import { validAction } from "../../stores/validState"
 import { useDelete } from "../../hooks/dataHandler"
 import AlertMain from "../../components/AlertMain"
+import useWebSocket from "react-use-websocket"
+import mergeObtoArr from "../../utilities/mergeObjtoArr"
+import { wsURI } from "../../config/originConfig"
 
 const RootLayout = () => {
     const [open, setOpen] = useState(false);
@@ -24,6 +27,45 @@ const RootLayout = () => {
     const location = useLocation()
     const { payload, isAuthenticated } = useSelector(state => state.auth)
     const { data, loading, error, execute } = useDelete('/logOut')
+    const [wsURL, setWsURL] = useState('')
+    const [wsMessage, setWsMessage] = useState([])
+
+    const handleWSOpen = () => {
+        setAlertComponent({
+            severity: 'info',
+            alertLabel: 'WS Info',
+            content: 'Websocket Opened'
+        })
+        setAlertState(true)
+    }
+
+    const handleWSClose = () => {
+        setAlertComponent({
+            severity: 'info',
+            alertLabel: 'WS Info',
+            content: 'Websocket Closed'
+        })
+        setAlertState(true)
+    }
+
+    const handleWSError = () => {
+        setAlertComponent({
+            severity: 'error',
+            alertLabel: 'Error',
+            content: 'Websocket Fail to Connect'
+        })
+        setAlertState(true)
+    }
+
+    const { lastMessage } = useWebSocket(wsURI + wsURL, {
+        onOpen: handleWSOpen,
+        onClose: handleWSClose,
+        onError: handleWSError,
+        reconnectAttempts: 3,
+        shouldReconnect: true
+    })
+
+
     const [alertComponent, setAlertComponent] = useState({
         severity: 'info',
         alertLabel: '',
@@ -74,6 +116,18 @@ const RootLayout = () => {
         }
     }, [error])
 
+    useEffect(() => {
+        if (isAuthenticated && payload) {
+            //do
+            setWsURL(payload?.wsPath)
+        }
+    }, [isAuthenticated, payload])
+
+    useEffect(() => {
+        const updatedArr = mergeObtoArr(wsMessage, lastMessage)
+        setWsMessage(updatedArr)
+        //need to know is wsMessage uses
+    }, [lastMessage, wsMessage])
 
     return (
         <>
@@ -140,7 +194,7 @@ const RootLayout = () => {
                 >
                     <Toolbar />
                     <Container maxWidth="lg" sx={{ my: 4 }}>
-                        <Outlet />
+                        <Outlet context={{ wsMessage }} />
                     </Container>
                 </Box>
             </Box >
@@ -152,7 +206,7 @@ const RootLayout = () => {
                 handleAccept={handleSignOut}
                 disableAccBtn={loading}
                 disableCancelBtn={loading}
-                customAccBtn={loading?<CircularProgress size={27}/>:'Ok'}
+                customAccBtn={loading ? <CircularProgress size={27} /> : 'Ok'}
             >
                 Are you sure to sign out
             </DialogAlert>
