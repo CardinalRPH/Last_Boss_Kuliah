@@ -80,6 +80,7 @@ const SignUpPage = () => {
                                 autoFocus
                                 onChange={handleChange}
                                 value={inputForm.userName}
+                                disabled={loading}
                             />
                             <TextField
                                 margin="normal"
@@ -92,6 +93,7 @@ const SignUpPage = () => {
                                 onChange={handleChange}
                                 value={inputForm.userMail}
                                 type="email"
+                                disabled={loading}
                             />
                             <TextFieldPassword
                                 label="Password"
@@ -99,6 +101,7 @@ const SignUpPage = () => {
                                 onChange={handleChange}
                                 required
                                 value={inputForm.userPass}
+                                disabled={loading}
                             />
                             <Button
                                 type="submit"

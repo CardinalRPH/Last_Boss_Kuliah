@@ -6,7 +6,7 @@ const DetailPageButtonCard = ({ onWatering }) => {
         <Paper
             sx={{
                 p: 2,
-                minHeight: 200,
+                minHeight: 150,
                 position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',

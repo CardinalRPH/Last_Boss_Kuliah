@@ -55,6 +55,9 @@ const authSlicer = createSlice({
             state.isValid = isValid
             saveAuthLocalStorage(state.isAuthenticated, state.payload)
         },
+        updateStateLocal(state, action) {
+            saveAuthLocalStorage(state.isAuthenticated, {...state.payload, ...action.payload})
+        },
         logout(state) {
             state.isAuthenticated = false
             state.payload = ""

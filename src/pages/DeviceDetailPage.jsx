@@ -1,41 +1,100 @@
-import { Grid, Typography } from "@mui/material"
+import { Box, CircularProgress, Grid, Typography } from "@mui/material"
 import { useParams } from "react-router-dom"
 import DetailPageRainCard from "../components/DeviceDetailCard/DetailPageRainCard"
 import DetailPageLastWaterCard from "../components/DeviceDetailCard/DetailPageLastWaterCard"
 import DetailPageWaterStorageCard from "../components/DeviceDetailCard/DetailPageWaterStorageCard"
 import DetailPageButtonCard from "../components/DeviceDetailCard/DetailPageButtonCard"
 import TabPanel from "../components/TabPanel"
+import { useGet } from "../hooks/dataHandler"
+import { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
+import AlertMain from "../components/AlertMain"
 
 const DeviceDetailPage = () => {
     const { id } = useParams()
-    console.log(id)
+    const { payload, isAuthenticated } = useSelector(state => state.auth)
+    const [alertState, setAlertState] = useState(false)
+    const { data: dataGet, error: errorGet, loading: loadingGet, execute: executeGet } = useGet('userDevice', true, false)
+    const [alertComponent, setAlertComponent] = useState({
+        severity: 'info',
+        alertLabel: '',
+        content: ''
+    })
+
+    const handleOnWatering = () => {
+        
+    }
+
+    useEffect(() => {
+        if (dataGet) {
+            //do
+        }
+
+    }, [dataGet])
+
+    useEffect(() => {
+        if (errorGet) {
+            //do
+            setAlertComponent({
+                severity: 'error',
+                alertLabel: 'Error',
+                content: errorGet.response?.data.error || errorGet.message
+            })
+            setAlertState(true)
+        }
+    }, [errorGet])
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            executeGet({
+                params: {
+                    userMail: payload.email,
+                    deviceId: id
+                }
+            })
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
         <>
-            <Grid container spacing={3}>
-                <Grid item xs={12} >
-                    <Typography variant="h6">Device Name</Typography>
-                    <Typography variant="body1">Device ID</Typography>
-                </Grid>
-                <Grid item xs={6} md={3}>
-                    <DetailPageRainCard />
-                </Grid>
-                <Grid item xs={6} md={3}>
-                    <DetailPageLastWaterCard />
-                </Grid>
-                <Grid item xs={6} md={3}>
-                    <DetailPageWaterStorageCard />
-                </Grid>
-                <Grid item xs={6} md={3}>
-                    <DetailPageButtonCard/>
-                </Grid>
-                <Grid item xs={12} >
-                    <Typography variant="h6">Device Report</Typography>
-                </Grid>
-                <Grid item xs={12} >
-                    <TabPanel/>
-                </Grid>
-            </Grid>
+            {loadingGet ?
+                <CircularProgress size={50} /> : errorGet ?
+                    <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Typography variant="h4">No Device Found</Typography>
+                    </Box> :
+                    <Grid container spacing={3} justifyContent="center">
+                        <Grid item xs={12} >
+                            <Typography variant="h6">Device Name</Typography>
+                            <Typography variant="body1">Device ID</Typography>
+                        </Grid>
+                        <Grid item xs={12} md={3}>
+                            <DetailPageRainCard value={false} />
+                        </Grid>
+                        <Grid item xs={12} md={3}>
+                            <DetailPageLastWaterCard value="" />
+                        </Grid>
+                        <Grid item xs={12} md={3}>
+                            <DetailPageWaterStorageCard value={50} />
+                        </Grid>
+                        <Grid item xs={12} md={3}>
+                            <DetailPageButtonCard onWatering={handleOnWatering} />
+                        </Grid>
+                        <Grid item xs={12} >
+                            <Typography variant="h6">Device Report</Typography>
+                        </Grid>
+                        <Grid item xs={12} >
+                            <TabPanel />
+                        </Grid>
+                    </Grid>
+            }
+            <AlertMain
+                open={alertState}
+                onClose={() => setAlertState(false)}
+                alertLabel={alertComponent.alertLabel}
+                severity={alertComponent.severity}
+                content={alertComponent.content}
+            />
         </>
     )
 }

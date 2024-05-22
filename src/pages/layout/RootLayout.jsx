@@ -64,6 +64,7 @@ const RootLayout = () => {
     useEffect(() => {
         if (error) {
             //do 
+            setDialogOpen(false)
             setAlertComponent({
                 severity: 'error',
                 alertLabel: 'Error',
@@ -153,7 +154,7 @@ const RootLayout = () => {
                 disableCancelBtn={loading}
                 customAccBtn={loading?<CircularProgress size={27}/>:'Ok'}
             >
-                <Typography>Are you sure to sign out</Typography>
+                Are you sure to sign out
             </DialogAlert>
             <AlertMain
                 open={alertState}

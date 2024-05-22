@@ -75,6 +75,7 @@ const SignInPage = () => {
                             autoComplete="email"
                             type="email"
                             autoFocus
+                            disabled={loading}
                         />
                         <TextFieldPassword
                             label="Password"
@@ -82,6 +83,7 @@ const SignInPage = () => {
                             value={signInData.userPass}
                             name="userPass"
                             required
+                            disabled={loading}
                         />
                         {error &&
                             <Typography color="red">{error.response.data.error}</Typography>
@@ -104,7 +106,7 @@ const SignInPage = () => {
                         </Button>
                         <Grid container>
                             <Grid item xs>
-                                <Link component="button" onClick={() => navigate('/forgetPassword')} variant="body2">
+                                <Link component="button" onClick={() => navigate('/lost-password')} variant="body2">
                                     Forgot password?
                                 </Link>
                             </Grid>

@@ -7,7 +7,7 @@ const AddNewDeviceButton = ({ onClick }) => {
     return (
         <Paper
             sx={{
-                p: 2,
+                p: 5,
                 display: 'flex',
                 flexDirection: 'column',
                 height: 100,
@@ -16,7 +16,7 @@ const AddNewDeviceButton = ({ onClick }) => {
                 alignItems: 'center'
             }}
         >
-            <Button variant="outlined" onClick={onClick}>
+            <Button variant="outlined" onClick={onClick} sx={{p:0}}>
                 <FontAwesomeIcon icon={faCirclePlus} style={{ margin: 2 }} size="2xl" />
                 <Typography sx={{ margin: 2 }} variant="h6">Add a new Device</Typography>
             </Button>

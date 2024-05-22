@@ -15,6 +15,10 @@ import DeviceDetailPage from "../pages/DeviceDetailPage"
 import AuthGuard from "../services/AuthGuard"
 import NotAuthGuard from "../services/NotAuthGuard"
 import NoValidGuard from "../services/NoValidGuard"
+import LostPassCheckMail from "../pages/LostPassCheckMail"
+import UForgetGuard from "../services/UForgetGuard"
+import ResetPassScss from "../pages/ResetPassScss"
+import ResetScssGuard from "../services/ResetScssGuard"
 
 
 const AppRouter = createBrowserRouter([
@@ -46,19 +50,40 @@ const AppRouter = createBrowserRouter([
         )
     },
     {
-        element: (
-            <NotAuthGuard>
-                <ResetPassLayout />
-            </NotAuthGuard>
-        ),
+        element: <ResetPassLayout />
+        ,
         children: [
             {
                 path: '/lost-password',
-                element: <LostPassPage />
+                element: (
+                    <NotAuthGuard>
+                        <LostPassPage />
+                    </NotAuthGuard>
+                )
             },
             {
-                path: '/reset-password',
-                element: <PassResetPage />
+                path: '/check-reset-mail',
+                element: (
+                    <NotAuthGuard>
+                        <UForgetGuard>
+                            <LostPassCheckMail />
+                        </UForgetGuard>
+                    </NotAuthGuard>
+                )
+            },
+            {
+                path: '/reset-password/:token',
+                element: (
+                    <PassResetPage />
+                )
+            },
+            {
+                path: '/reset-success',
+                element: (
+                    <ResetScssGuard>
+                        <ResetPassScss />
+                    </ResetScssGuard>
+                )
             }
         ]
     },

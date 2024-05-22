@@ -13,7 +13,7 @@ const DialogAlert = ({ open = false, onClose, handleCancle, handleAccept, dialog
                 {dialogTitle}
             </DialogTitle>
             <DialogContent
-                sx={{ minWidth: 400 }}
+                sx={{ minWidth: 300 }}
             >
                 <DialogContentText id="alert-dialog-description">
                     {children}

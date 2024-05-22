@@ -40,6 +40,11 @@ const DevicePage = () => {
         })
     }
 
+    const handleDeleteIconClick = (deviceId) => {
+        setDialogOpen(true)
+        setDeviceDeleteId(deviceId)
+    }
+
     const handleDelete = () => {
         executeDel({
             data: {
@@ -64,6 +69,9 @@ const DevicePage = () => {
             //do data
             setDeviceData(dataGet?.data)
         }
+    }, [dataGet])
+
+    useEffect(() => {
         if (dataPut) {
             //do
             setAlertComponent({
@@ -89,6 +97,7 @@ const DevicePage = () => {
         }
         if (dataDel) {
             //do
+            setDialogOpen(false)
             executeGet({
                 params: {
                     userMail: payload?.email
@@ -101,8 +110,8 @@ const DevicePage = () => {
                 content: 'Success Delete Device'
             })
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dataDel, dataGet, dataPost, dataPut])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dataDel, dataPost, dataPut])
 
     useEffect(() => {
         if (errorGet) {
@@ -134,6 +143,7 @@ const DevicePage = () => {
         }
         if (errorDel) {
             //do error
+            setDialogOpen(false)
             setAlertComponent({
                 severity: 'error',
                 alertLabel: 'Error',
@@ -162,11 +172,11 @@ const DevicePage = () => {
                 <Grid item xs={12} >
                     {loadingGet ?
                         <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-                            <CircularProgress size={60} />
+                            <CircularProgress size={50} />
                         </Box> : deviceData.length > 0 ?
                             deviceData.map(value =>
                                 <DeviceCard
-                                    onDelete={() => { setDialogOpen(true); setDeviceDeleteId(value.deviceId) }}
+                                    onDelete={() => handleDeleteIconClick(value.deviceId)}
                                     onSave={(deviceName) => handleUpdateSave(value.deviceId, deviceName)}
                                     onGoTo={() => navigate(`/devices/${value.deviceId}`)}
                                     key={value.deviceId}
@@ -188,21 +198,14 @@ const DevicePage = () => {
                 modalTitle="Add a New Device"
             >
                 <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: { xs: 200, md: 500 } }} component="form" onSubmit={handleSubmit}>
-                    <TextField name="deviceID" label="Device ID" required />
-                    <TextField name="deviceName" label="Device Name" sx={{ my: 2 }} required />
+                    <TextField disabled={loadingPost} name="deviceId" label="Device ID" required />
+                    <TextField disabled={loadingPost} name="deviceName" label="Device Name" sx={{ my: 2 }} required />
                     <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
                         <Button sx={{ mx: 2 }} disabled={loadingPost} onClick={() => setModalState(false)}>Cancel</Button>
                         <Button sx={{ mx: 2 }} disabled={loadingPost} type="submit">Save</Button>
                     </Box>
                 </Box>
             </ModalMain>
-            <AlertMain
-                open={alertState}
-                onClose={() => setAlertState(false)}
-                alertLabel={alertComponent.alertLabel}
-                severity={alertComponent.severity}
-                content={alertComponent.content}
-            />
             <DialogAlert
                 open={dialogOpen}
                 onClose={() => !loadingDel && setDialogOpen(false)}
@@ -211,10 +214,17 @@ const DevicePage = () => {
                 handleAccept={handleDelete}
                 disableAccBtn={loadingDel}
                 disableCancelBtn={loadingDel}
-                customAccBtn={loadingDel?<CircularProgress size={25}/>:'Ok'}
+                customAccBtn={loadingDel ? <CircularProgress size={25} /> : 'Ok'}
             >
-                <Typography>Are you sure to delete {deviceDeleteId} item</Typography>
+               Are you sure to delete {deviceDeleteId} item
             </DialogAlert>
+            <AlertMain
+                open={alertState}
+                onClose={() => setAlertState(false)}
+                alertLabel={alertComponent.alertLabel}
+                severity={alertComponent.severity}
+                content={alertComponent.content}
+            />
         </>
     )
 }

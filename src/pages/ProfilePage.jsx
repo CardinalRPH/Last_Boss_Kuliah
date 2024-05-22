@@ -1,22 +1,27 @@
-import { Box, Button, CircularProgress, Paper, TextField, Typography } from "@mui/material"
+import { Box, Button, CircularProgress, Paper, TextField } from "@mui/material"
 import { useEffect, useState } from "react"
 import AlertMain from "../components/AlertMain"
 import { useDelete, useGet, usePut } from "../hooks/dataHandler"
 import DialogAlert from "../components/DialogAlert"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
+import { authAction } from "../stores/authState"
 
 const ProfilePage = () => {
     const [readOnly, setReadOnly] = useState(true)
     const [alertState, setAlertState] = useState(false)
     const [dialogOpen, setDialogOpen] = useState(false)
-    const { data: dataPut, error: errorPut, loading: loadingPut, execute: executePut } = usePut('removeAccount')
+    const { data: dataPut, error: errorPut, loading: loadingPut, execute: executePut } = usePut('updateAccount')
     const { data: dataGet, error: errorGet, loading: loadingGet, execute: executeGet } = useGet('getAccount', true, false)
     const { data: dataDel, error: errorDel, loading: loadingDel, execute: executeDel } = useDelete('removeAccount')
     const { payload, isAuthenticated } = useSelector(state => state.auth)
-    const [textNameDefValue, setTextNameDefValue] = useState('')
-    const [textFieldVal, setTextFieldVal] = useState({
+    const dispatch = useDispatch()
+    const [textNameDefValue, setTextNameDefValue] = useState({
         userName: "",
         userMail: "",
+    })
+    const [textFieldVal, setTextFieldVal] = useState({
+        userName: textNameDefValue.userName,
+        userMail: textNameDefValue.userMail,
         userOldPass: "",
         userNewPass: ""
     })
@@ -56,18 +61,12 @@ const ProfilePage = () => {
     useEffect(() => {
         if (dataGet) {
             //do
-            setTextFieldVal(prevState => ({ ...prevState, userMail: dataGet?.data.email, userName: dataGet?.data.name }))
+            setTextNameDefValue({ userMail: dataGet?.data.email, userName: dataGet?.data.name })
         }
         if (dataPut) {
             //do
-            setTextNameDefValue(textFieldVal.userName)
-            setTextFieldVal(prevState => (
-                {
-                    ...prevState,
-                    userOldPass: "",
-                    userNewPass: ""
-                }
-            ))
+            dispatch(authAction.updateStateLocal({name:textFieldVal.userName}))
+            setTextNameDefValue({ userMail: textFieldVal.userMail, userName: textFieldVal.userName })
             setAlertComponent({
                 severity: 'success',
                 alertLabel: 'Success',
@@ -84,7 +83,8 @@ const ProfilePage = () => {
             })
             setAlertState(true)
         }
-    }, [dataDel, dataGet, dataPut, textFieldVal.userName])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dataDel, dataGet, dataPut])
 
     useEffect(() => {
         if (errorGet) {
@@ -98,6 +98,7 @@ const ProfilePage = () => {
         }
         if (errorPut) {
             //do
+            setTextFieldVal(prevState => ({ ...prevState, userName: textNameDefValue.userName }))
             setAlertComponent({
                 severity: 'error',
                 alertLabel: 'Error',
@@ -114,7 +115,12 @@ const ProfilePage = () => {
             })
             setAlertState(true)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [errorDel, errorGet, errorPut])
+
+    useEffect(() => {
+        setTextFieldVal(prevState => ({ ...prevState, userMail: textNameDefValue.userMail, userName: textNameDefValue.userName }))
+    }, [textNameDefValue.userMail, textNameDefValue.userName])
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -133,7 +139,7 @@ const ProfilePage = () => {
         <>
             <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', width: '100%', height: '80vh' }}>
                 {loadingGet ?
-                    <CircularProgress size={60} /> :
+                    <CircularProgress size={50} /> :
                     <>
                         <Paper
                             sx={{
@@ -165,20 +171,24 @@ const ProfilePage = () => {
                             <TextField name="userOldPass" onChange={handleTextChange} value={textFieldVal.userOldPass} sx={{ mx: 2, width: { xs: '100%', md: '50%' } }} label="Old Password" inputProps={{ readOnly }} required={textFieldVal.userNewPass !== ''} />
                             <TextField name="userNewPass" onChange={handleTextChange} value={textFieldVal.userNewPass} sx={{ mx: 2, width: { xs: '100%', md: '50%' } }} label="New Password" inputProps={{ readOnly }} required={textFieldVal.userOldPass !== ''} />
                         </Paper>
-                        <Box sx={{ my: 1 }}>
+                        <Box sx={{ my: 1, position: 'relative', width:'100%', display:'flex', justifyContent:'center' }}>
                             {readOnly && !loadingPut ? (
-                                <Button sx={{ mx: 2 }} onClick={() => { setReadOnly(false) }} variant="outlined">Edit</Button>
+                                <>
+                                    <Button sx={{ m: 2 }} type="button" onClick={(e) => { e.preventDefault();  setReadOnly(false)}} variant="outlined">Edit</Button>
+                                    <Button sx={{ m: 2, position: {xs:'relative', lg:'absolute'}, left: 0, bottom: 0 }} onClick={() => setDialogOpen(true)} color="error" variant="outlined">Delete Account</Button>
+                                </>
 
                             ) : (
                                 <>
                                     <Button disabled={loadingPut} sx={{ mx: 2 }} onClick={() => {
                                         setReadOnly(true); setTextFieldVal({
-                                            userName: textNameDefValue,
+                                            userMail: textNameDefValue.userMail,
+                                            userName: textNameDefValue.userName,
                                             userOldPass: "",
                                             userNewPass: ""
                                         })
                                     }} variant="outlined">Cancel</Button>
-                                    <Button disabled={loadingPut} sx={{ mx: 2 }} type="onsubmit" variant="outlined">Save</Button>
+                                    <Button disabled={loadingPut} sx={{ mx: 2 }} type="submit" variant="outlined">Save</Button>
                                 </>
                             )}
 
@@ -204,7 +214,7 @@ const ProfilePage = () => {
                 disableCancelBtn={loadingDel}
                 customAccBtn={loadingDel ? <CircularProgress size={25} /> : 'Ok'}
             >
-                <Typography>Are you sure to delete Account</Typography>
+                Are you sure to delete Account
             </DialogAlert>
         </>
     )
