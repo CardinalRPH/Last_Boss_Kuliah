@@ -1,9 +1,10 @@
-import { addUpdateUserToken, getUserToken } from "../models/fireStoreToken.js"
+import { addUpdateUserToken, deleteUserToken, getUserToken } from "../models/fireStoreToken.js"
 import { getUserbyId, updateUser } from "../models/firestoreUser.js"
 import { Bhash } from "../security/bcryptPassword.js"
 import generateOTP from "../security/generateOTP.js"
 import { generateToken, verifyToken } from "../security/jwtManager.js"
 import contentValidation from "../security/validations/contentValidation.js"
+import isEmailValid from "../security/validations/isEmailValid.js"
 import mailSender from "../utilities/mailSender.js"
 
 export const forgetValidateEmailPost = async (req, res) => {
@@ -41,7 +42,7 @@ export const forgetValidateEmailPost = async (req, res) => {
         }
         const codeToken = generateOTP()
         const token = generateToken({
-            email: existUser.email,
+            email: existUser.data.email,
             token: codeToken
         }, false, {
             expireMinutes: 10
@@ -51,8 +52,9 @@ export const forgetValidateEmailPost = async (req, res) => {
 
         mailSender(userMail, 'resetPass', {
             userName: existUser.data.name,
-            payload: `http://${process.env.FRONT_END_DOMAIN}/${token}`
+            payload: `http://${process.env.FRONT_END_DOMAIN}/reset-password/${token}`
         })
+        req.session.destroy()
         res.status(200).json({
             data: 'Recovery password link sent to your email!'
         })
@@ -87,7 +89,6 @@ export const forgetValidateTokenGet = async (req, res) => {
         return
     }
     const { email, token: userToken } = validToken
-
     if (!isEmailValid(email)) {
         res.status(400).json({
             error: "Email not Valid"
@@ -201,17 +202,19 @@ export const foregetResetPasswordPost = async (req, res) => {
         }
 
         const encryptedPass = await Bhash(newPassword)
+        await deleteUserToken({ email })
         const updatedUser = await updateUser({
             email,
-            password: encryptedPass,
-            name: null
+            payload: {
+                password: encryptedPass
+            }
         })
 
         if (!updatedUser) {
             res.status(404).json({ error: 'User not found' })
             return
         }
-        
+
         req.session.destroy()
         res.status(200).json({
             data: updatedUser.data

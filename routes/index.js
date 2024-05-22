@@ -52,7 +52,7 @@ router.delete('/removeAccount', (req, res, next) => loggedMid(req, res, next), u
 //forgetPasswordController
 router.post('/resetSendMail', (req, res, next) => unloggedMid(req, res, next), rateLimit({
     windowMs: 2 * 60 * 1000, //2 minutes
-    limit: 1,
+    limit: 5,
     handler: (req, res) => {
         res.status(429).json({
             error: "Too many requests, please try again later.",
@@ -60,7 +60,7 @@ router.post('/resetSendMail', (req, res, next) => unloggedMid(req, res, next), r
     }
 }), forgetValidateEmailPost)
 router.get('/resetValidate', (req, res, next) => unloggedMid(req, res, next), forgetValidateTokenGet)
-router.post('/resetAccountPass', (req, res, next) => unloggedMid(req, res, next), foregetResetPasswordPost)
+router.put('/resetAccountPass', (req, res, next) => unloggedMid(req, res, next), foregetResetPasswordPost)
 
 //device Controller
 router.get('/userDevice', (req, res, next) => loggedMid(req, res, next), deviceGet)
