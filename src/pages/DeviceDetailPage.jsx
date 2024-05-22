@@ -80,7 +80,7 @@ const DeviceDetailPage = () => {
                         </Grid>
                         {/* from DB */}
                         <Grid item xs={12} md={3}>
-                            <DetailPageLastWaterCard value={`${day}, ${mainData?.waterVal[day]?.data.reverse()[0] || '00:00'}`} />
+                            <DetailPageLastWaterCard value={`${day}, ${mainData?.waterVal?.[day]?.data.reverse()[0] || '00:00'}`} />
                         </Grid>
                         {/* from webSocket */}
                         <Grid item xs={12} md={3}>

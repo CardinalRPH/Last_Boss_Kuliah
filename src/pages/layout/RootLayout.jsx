@@ -27,7 +27,7 @@ const RootLayout = () => {
     const location = useLocation()
     const { payload, isAuthenticated } = useSelector(state => state.auth)
     const { data, loading, error, execute } = useDelete('/logOut')
-    const [wsURL, setWsURL] = useState('')
+    const [wsURL, setWsURL] = useState('wss://echo.websocket.org/')
     const [wsMessage, setWsMessage] = useState([])
 
     const handleWSOpen = () => {
@@ -57,12 +57,12 @@ const RootLayout = () => {
         setAlertState(true)
     }
 
-    const { lastMessage } = useWebSocket(wsURI + wsURL, {
+    const { lastMessage } = useWebSocket(wsURL === 'wss://echo.websocket.org/' ? wsURL : wsURI + wsURL, {
         onOpen: handleWSOpen,
         onClose: handleWSClose,
         onError: handleWSError,
         reconnectAttempts: 3,
-        shouldReconnect: true
+        shouldReconnect: ()=> true
     })
 
 
@@ -124,8 +124,10 @@ const RootLayout = () => {
     }, [isAuthenticated, payload])
 
     useEffect(() => {
-        const updatedArr = mergeObtoArr(wsMessage, lastMessage)
-        setWsMessage(updatedArr)
+        if (lastMessage !== null) {
+            const updatedArr = mergeObtoArr(wsMessage, lastMessage)
+            setWsMessage(updatedArr)
+        }
         //need to know is wsMessage uses
     }, [lastMessage, wsMessage])
 

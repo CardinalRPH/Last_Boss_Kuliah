@@ -1,5 +1,5 @@
 const mergeObtoArr = (array, newObj) => {
-    const index = array.findIndex(item => item.id === newObj.id);
+    const index = array.findIndex(item => item.id === newObj?.id);
     if (index !== -1) {
         array[index] = newObj;
     } else {
