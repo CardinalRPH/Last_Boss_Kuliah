@@ -36,6 +36,6 @@ void initConnection(const char *ssid, const char *wifiPassword, String email, St
     if (connState.getHttpResponseCode() > 0)
     {
         parseError = deserializeJson(httpData, connState.getHttpPayload());
-        initWebSocket(httpData["path"].as<String>(), httpData["token"].as<String>(), port, host);
+        initWebSocket(httpData["path"].as<String>(), port, host);
     }
 }

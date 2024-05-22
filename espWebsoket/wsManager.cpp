@@ -90,13 +90,12 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     }
 }
 
-void initWebSocket(String WSPath, String WSHeaderToken, int port, String host)
+void initWebSocket(String WSPath, int port, String host)
 {
     webSocket.begin(host, port, WSPath);
     Serial.println("Connected to url: ");
     Serial.println(String(host) + ":" + String(port) + String(WSPath));
     webSocket.onEvent(webSocketEvent);
-    webSocket.setExtraHeaders(WSHeaderToken.c_str());
     webSocket.setReconnectInterval(WSReconInterval);
 }
 

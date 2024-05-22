@@ -6,7 +6,7 @@
 
 const int WSReconInterval = 5000;
 
-void initWebSocket(String WSPath, String WSHeaderToken, int port, String host);
+void initWebSocket(String WSPath, int port, String host);
 void wsSentMsg(String message);
 void wsLoop();
 
