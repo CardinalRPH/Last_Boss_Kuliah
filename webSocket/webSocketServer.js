@@ -13,14 +13,14 @@ export default (server) => {
     server.on('upgrade', (request, socket, head) => {
         try {
             const path = request.url.split("/")
-            const headerToken = request.headers.authorization
             if (path[1] !== "app") {
                 socket.write("HTTP/1.1 404 Not Found\r\n\r\n");
                 socket.destroy()
                 return
             }
             const pathToken = path[2]
-            if (!pathToken || !headerToken) {
+            const authToken = path[3]
+            if (!pathToken || !authToken) {
                 socket.write("HTTP/1.1 400 Bad Request\r\n\r\n");
                 socket.destroy()
                 return
@@ -33,7 +33,7 @@ export default (server) => {
                 return
             }
             //check jwt  token is valid or not
-            const acceptableToken = verifyToken(headerToken, false)
+            const acceptableToken = verifyToken(authToken, false)
             if (!acceptableToken) {
                 socket.write("HTTP/1.1 401 Unauthorized\r\n\r\n");
                 socket.destroy()

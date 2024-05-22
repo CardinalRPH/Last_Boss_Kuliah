@@ -31,7 +31,7 @@ export const deviceGet = async (req, res) => {
             }
 
             res.status(200).json({
-                data: userDevice.data
+                data: { ...userDevice.data, id: userDevice.id }
             })
         } catch (error) {
             console.error("Error:", error);

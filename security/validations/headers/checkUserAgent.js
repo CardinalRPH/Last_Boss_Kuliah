@@ -8,7 +8,7 @@ const validateEspUserAgent = (userAgent) => {
 }
 
 const validatePostmanDevAgent = (userAgent) => {
-    return userAgent === "PostmanRuntime/7.37.3"
+    return userAgent === "PostmanRuntime/7.39.0"
 }
 
 export default (req) => {

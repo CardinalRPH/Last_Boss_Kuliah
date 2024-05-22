@@ -111,7 +111,6 @@ export const deviceAuthPost = async (req, res) => {
     }, false, {})
 
     res.status(200).json({
-        path: `/app/${encryptedPath}`,
-        token: `authorization:${token}`
+        path: `/app/${encryptedPath}/${token}`
     })
 }
