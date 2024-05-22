@@ -1,13 +1,7 @@
 import { Box, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 import PropTypes from 'prop-types';
-import MondayChart from "./chart/MondayChart";
-import TuesdayChart from "./chart/TuesdayChart";
-import WednesdayChart from "./chart/WednesdayChart";
-import ThursdayChart from "./chart/ThursdayChart";
-import FridayChart from "./chart/FridayChart";
-import SaturdayChart from "./chart/SaturdayChart";
-import SundayChart from "./chart/SundayChart";
+import PanelChart from "./PanelChart";
 
 const CustomTabPanel = ({ children, value, index, ...other }) => {
 
@@ -42,7 +36,7 @@ const a11yProps = (index) => {
     };
 }
 
-const TabPanel = () => {
+const TabPanel = ({ data }) => {
     const [value, setValue] = useState(0);
 
     const handleChange = (event, newValue) => {
@@ -62,28 +56,60 @@ const TabPanel = () => {
                 </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
-                <MondayChart />
+                <PanelChart
+                    dateVal={data?.sensorVal?.Monday.date}
+                    waterVal={data?.waterVal?.Monday.data || []}
+                    sensorVal={data?.sensorVal?.Monday.data || []}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-                <TuesdayChart />
+                <PanelChart
+                    dateVal={data?.sensorVal?.Tuesday.date}
+                    waterVal={data?.waterVal?.Tuesday.data || []}
+                    sensorVal={data?.sensorVal?.Tuesday.data || []}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-                <WednesdayChart />
+                <PanelChart
+                    dateVal={data?.sensorVal?.Wednesday.date}
+                    waterVal={data?.waterVal?.Wednesday.data || []}
+                    sensorVal={data?.sensorVal?.Wednesday.data || []}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={3}>
-                <ThursdayChart />
+                <PanelChart
+                    dateVal={data?.sensorVal?.Thursday.date}
+                    waterVal={data?.waterVal?.Thursday.data || []}
+                    sensorVal={data?.sensorVal?.Thursday.data || []}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={4}>
-                <FridayChart />
+                <PanelChart
+                    dateVal={data?.sensorVal?.Friday.date}
+                    waterVal={data?.waterVal?.Friday.data || []}
+                    sensorVal={data?.sensorVal?.Friday.data || []}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={5}>
-                <SaturdayChart />
+                <PanelChart
+                    dateVal={data?.sensorVal?.Saturday.date}
+                    waterVal={data?.waterVal?.Saturday.data || []}
+                    sensorVal={data?.sensorVal?.Saturday.data || []}
+                />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={6}>
-                <SundayChart />
+                <PanelChart
+                    dateVal={data?.sensorVal?.Sunday.date}
+                    waterVal={data?.waterVal?.Sunday.data || []}
+                    sensorVal={data?.sensorVal?.Sunday.data || []}
+                />
             </CustomTabPanel>
         </>
     )
+}
+
+TabPanel.propTypes = {
+    data: PropTypes.object,
 }
 
 export default TabPanel

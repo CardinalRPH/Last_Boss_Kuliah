@@ -16,7 +16,7 @@ const DashShortcutCard = ({ deviceName = 'zero', onWatering, isRain = false, las
                 position: 'relative'
             }}
         >
-            <Title>{`Device ${deviceName}`}</Title>
+            <Title>{deviceName}</Title>
             <Box sx={{ position: 'absolute', top: 5, right: 10 }}>
                 <IconButton onClick={onIconClick}>
                     <FontAwesomeIcon icon={faArrowUpRightFromSquare} />

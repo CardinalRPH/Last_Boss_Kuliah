@@ -9,12 +9,15 @@ import { useGet } from "../hooks/dataHandler"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import AlertMain from "../components/AlertMain"
+import getCurrentTime from "../utilities/getCurrentTime"
 
 const DeviceDetailPage = () => {
     const { id } = useParams()
     const { payload, isAuthenticated } = useSelector(state => state.auth)
     const [alertState, setAlertState] = useState(false)
+    const [mainData, setMainData] = useState({})
     const { data: dataGet, error: errorGet, loading: loadingGet, execute: executeGet } = useGet('userDevice', true, false)
+    const { day } = getCurrentTime()
     const [alertComponent, setAlertComponent] = useState({
         severity: 'info',
         alertLabel: '',
@@ -22,12 +25,13 @@ const DeviceDetailPage = () => {
     })
 
     const handleOnWatering = () => {
-        
+
     }
 
     useEffect(() => {
         if (dataGet) {
             //do
+            setMainData(dataGet.data)
         }
 
     }, [dataGet])
@@ -65,18 +69,23 @@ const DeviceDetailPage = () => {
                     </Box> :
                     <Grid container spacing={3} justifyContent="center">
                         <Grid item xs={12} >
-                            <Typography variant="h6">Device Name</Typography>
-                            <Typography variant="body1">Device ID</Typography>
+                            <Typography variant="h6">{mainData?.name || 'Device Name'}</Typography>
+                            <Typography variant="body1">{mainData?.id || 'Device ID'}</Typography>
+
                         </Grid>
+                        {/* from webSocket */}
                         <Grid item xs={12} md={3}>
                             <DetailPageRainCard value={false} />
                         </Grid>
+                        {/* from DB */}
                         <Grid item xs={12} md={3}>
-                            <DetailPageLastWaterCard value="" />
+                            <DetailPageLastWaterCard value={`${day}, ${mainData?.waterVal[day]?.data.reverse()[0] || '00:00'}`} />
                         </Grid>
+                        {/* from webSocket */}
                         <Grid item xs={12} md={3}>
                             <DetailPageWaterStorageCard value={50} />
                         </Grid>
+                        {/* function */}
                         <Grid item xs={12} md={3}>
                             <DetailPageButtonCard onWatering={handleOnWatering} />
                         </Grid>
@@ -84,7 +93,7 @@ const DeviceDetailPage = () => {
                             <Typography variant="h6">Device Report</Typography>
                         </Grid>
                         <Grid item xs={12} >
-                            <TabPanel />
+                            <TabPanel data={mainData} />
                         </Grid>
                     </Grid>
             }
