@@ -5,7 +5,7 @@ import DetailPageLastWaterCard from "../components/DeviceDetailCard/DetailPageLa
 import DetailPageWaterStorageCard from "../components/DeviceDetailCard/DetailPageWaterStorageCard"
 import DetailPageButtonCard from "../components/DeviceDetailCard/DetailPageButtonCard"
 import TabPanel from "../components/TabPanel"
-import { useGet } from "../hooks/dataHandler"
+import { useGet, usePost } from "../hooks/dataHandler"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import AlertMain from "../components/AlertMain"
@@ -18,6 +18,7 @@ const DeviceDetailPage = () => {
     const [mainData, setMainData] = useState({})
     const { wsMessage } = useOutletContext()
     const { data: dataGet, error: errorGet, loading: loadingGet, execute: executeGet } = useGet('userDevice', true, false)
+    const { data: dataPost, error: errorPost, loading: loadingPost, execute: executePost } = usePost('doWatering')
     const { day } = getCurrentTime()
     const [alertComponent, setAlertComponent] = useState({
         severity: 'info',
@@ -26,7 +27,12 @@ const DeviceDetailPage = () => {
     })
 
     const handleOnWatering = () => {
-
+        executePost({
+            data: {
+                deviceId: id,
+                userMail: payload?.email
+            }
+        })
     }
 
     useEffect(() => {
@@ -34,8 +40,16 @@ const DeviceDetailPage = () => {
             //do
             setMainData(dataGet.data)
         }
+        if (dataPost) {
+            setAlertComponent({
+                severity: 'success',
+                alertLabel: 'Success',
+                content: 'Success Watering'
+            })
+            setAlertState(true)
+        }
 
-    }, [dataGet])
+    }, [dataGet, dataPost])
 
     useEffect(() => {
         if (errorGet) {
@@ -47,7 +61,15 @@ const DeviceDetailPage = () => {
             })
             setAlertState(true)
         }
-    }, [errorGet])
+        if (errorPost) {
+            setAlertComponent({
+                severity: 'error',
+                alertLabel: 'Error',
+                content: errorPost.response?.data.error || errorPost.message
+            })
+            setAlertState(true)
+        }
+    }, [errorGet, errorPost])
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -88,7 +110,7 @@ const DeviceDetailPage = () => {
                         </Grid>
                         {/* function */}
                         <Grid item xs={12} md={3}>
-                            <DetailPageButtonCard onWatering={handleOnWatering} />
+                            <DetailPageButtonCard disableBtn={loadingPost} onWatering={handleOnWatering} />
                         </Grid>
                         <Grid item xs={12} >
                             <Typography variant="h6">Device Report</Typography>

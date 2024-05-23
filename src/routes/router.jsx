@@ -19,6 +19,7 @@ import LostPassCheckMail from "../pages/LostPassCheckMail"
 import UForgetGuard from "../services/UForgetGuard"
 import ResetPassScss from "../pages/ResetPassScss"
 import ResetScssGuard from "../services/ResetScssGuard"
+import NotFoundPage from "../pages/NotFoundPage"
 
 
 const AppRouter = createBrowserRouter([
@@ -119,6 +120,10 @@ const AppRouter = createBrowserRouter([
                 element: <ProfilePage />
             },
         ]
+    },
+    {
+        path: '*',
+        element: <NotFoundPage />
     }
 ])
 

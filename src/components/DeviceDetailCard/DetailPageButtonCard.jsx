@@ -1,7 +1,7 @@
 import { Button, Paper } from "@mui/material"
 import PropTypes from 'prop-types';
 
-const DetailPageButtonCard = ({ onWatering }) => {
+const DetailPageButtonCard = ({ onWatering, disableBtn = false }) => {
     return (
         <Paper
             sx={{
@@ -10,16 +10,17 @@ const DetailPageButtonCard = ({ onWatering }) => {
                 position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent:'center',
-                alignItems:'center'
+                justifyContent: 'center',
+                alignItems: 'center'
             }}
         >
-            <Button onClick={onWatering} variant="outlined">Do Watering</Button>
+            <Button disabled={disableBtn} onClick={onWatering} variant="outlined">Do Watering</Button>
         </Paper>
     )
 }
 
 DetailPageButtonCard.propTypes = {
-    onWatering: PropTypes.func.isRequired
+    onWatering: PropTypes.func.isRequired,
+    disableBtn: PropTypes.bool
 }
 export default DetailPageButtonCard

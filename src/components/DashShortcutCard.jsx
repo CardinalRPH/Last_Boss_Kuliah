@@ -4,7 +4,7 @@ import Title from "./Title";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare, faBucket, faCloudRain, faFaucetDrip } from "@fortawesome/free-solid-svg-icons";
 
-const DashShortcutCard = ({ deviceName = 'zero', onWatering, isRain = false, lastWaterDay, lastWaterHour, onIconClick, waterStorage = 0 }) => {
+const DashShortcutCard = ({ deviceName = 'zero', onWatering, isRain = false, lastWaterDay, lastWaterHour, onIconClick, waterStorage = 0, disableBtn = false }) => {
     return (
         <Paper
             sx={{
@@ -39,7 +39,7 @@ const DashShortcutCard = ({ deviceName = 'zero', onWatering, isRain = false, las
                     <Typography variant="h6" sx={{ my: 1 }}>{waterStorage}%</Typography>
                 </Grid>
                 <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                    <Button onClick={onWatering} variant="outlined">Do Watering</Button>
+                    <Button disabled={disableBtn} onClick={onWatering} variant="outlined">Do Watering</Button>
                 </Grid>
             </Grid>
         </Paper>
@@ -53,7 +53,8 @@ DashShortcutCard.propTypes = {
     lastWaterHour: PropTypes.string,
     onWatering: PropTypes.func,
     onIconClick: PropTypes.func,
-    waterStorage: PropTypes.number
+    waterStorage: PropTypes.number,
+    disableBtn: PropTypes.bool
 }
 
 export default DashShortcutCard

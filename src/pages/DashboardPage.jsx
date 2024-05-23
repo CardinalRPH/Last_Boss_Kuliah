@@ -3,7 +3,7 @@ import TotalDevice from "../components/TotalDevice"
 import DashShortcutCard from "../components/DashShortcutCard"
 import AlertMain from "../components/AlertMain"
 import { useEffect, useState } from "react"
-import { useGet } from "../hooks/dataHandler"
+import { useGet, usePost } from "../hooks/dataHandler"
 import { useSelector } from "react-redux"
 import getCurrentTime from "../utilities/getCurrentTime"
 import { useNavigate, useOutletContext } from "react-router-dom"
@@ -11,6 +11,7 @@ import { useNavigate, useOutletContext } from "react-router-dom"
 const DashboardPage = () => {
   const [alertState, setAlertState] = useState(false)
   const { data, error, execute } = useGet('/userDevice', true, false)
+  const { data: dataPost, error: errorPost, loading: loadingPost, execute: executePost } = usePost('doWatering')
   const [deviceData, setDeviceData] = useState([])
   const [totalDevice, SetTotalDevice] = useState(0)
   const { payload, isAuthenticated } = useSelector(state => state.auth)
@@ -24,7 +25,12 @@ const DashboardPage = () => {
   })
 
   const handleWatering = (deviceId) => {
-    console.log(deviceId);
+    executePost({
+      data: {
+        deviceId,
+        userMail: payload?.email
+      }
+    })
   }
 
   useEffect(() => {
@@ -33,7 +39,15 @@ const DashboardPage = () => {
       SetTotalDevice(data?.data.length)
       setDeviceData(data?.data)
     }
-  }, [data])
+    if (dataPost) {
+      setAlertComponent({
+        severity: 'success',
+        alertLabel: 'Success',
+        content: 'Success Watering'
+      })
+      setAlertState(true)
+    }
+  }, [data, dataPost])
 
   useEffect(() => {
     if (error) {
@@ -45,7 +59,15 @@ const DashboardPage = () => {
       })
       setAlertState(true)
     }
-  }, [error])
+    if (errorPost) {
+      setAlertComponent({
+        severity: 'error',
+        alertLabel: 'Error',
+        content: errorPost.response?.data.error || errorPost.message
+      })
+      setAlertState(true)
+    }
+  }, [error, errorPost])
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -78,6 +100,7 @@ const DashboardPage = () => {
               //function
               onIconClick={() => navigate(`/devices/${value.deviceId}`)}
               onWatering={() => handleWatering(value.deviceId)}
+              disableBtn={loadingPost}
             />) :
             <Typography>
               No Device Found
