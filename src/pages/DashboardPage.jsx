@@ -95,8 +95,8 @@ const DashboardPage = () => {
               lastWaterDay={day}
               lastWaterHour={value.waterVal[day].data.reverse()[0] || '00:00'}
               //from ws
-              isRain={wsMessage?.rainSensor || false}
-              waterStorage={wsMessage?.waterSensor || 0}
+              isRain={wsMessage.find(fVal => fVal.Id === value.deviceId)?.rainSensor || false}
+              waterStorage={wsMessage.find(fVal => fVal.Id === value.deviceId)?.waterSensor || 0}
               //function
               onIconClick={() => navigate(`/devices/${value.deviceId}`)}
               onWatering={() => handleWatering(value.deviceId)}

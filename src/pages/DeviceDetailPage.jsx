@@ -98,7 +98,7 @@ const DeviceDetailPage = () => {
                         </Grid>
                         {/* from webSocket */}
                         <Grid item xs={12} md={3}>
-                            <DetailPageRainCard value={wsMessage?.rainSensor || false} />
+                            <DetailPageRainCard value={wsMessage.find(fVal => fVal.Id === id)?.rainSensor || false} />
                         </Grid>
                         {/* from DB */}
                         <Grid item xs={12} md={3}>
@@ -106,7 +106,7 @@ const DeviceDetailPage = () => {
                         </Grid>
                         {/* from webSocket */}
                         <Grid item xs={12} md={3}>
-                            <DetailPageWaterStorageCard value={wsMessage?.waterSensor || 0} />
+                            <DetailPageWaterStorageCard value={wsMessage.find(fVal => fVal.Id === id)?.waterSensor || 0} />
                         </Grid>
                         {/* function */}
                         <Grid item xs={12} md={3}>
