@@ -20,7 +20,7 @@ public:
     float readSoil1();
     float readSoil2();
     int readTankValue();
-    int readLightValue();
+    float readLightValue();
     void setupSensorPin(byte rain_pin, byte soil_pin_1, byte soil_pin_2, byte trig_pin, byte echo_pin, byte light_pin, byte analog_pin);
     void setupTankValue(int empty_tank_cm, int full_tank_cm);
 };

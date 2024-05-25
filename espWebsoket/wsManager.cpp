@@ -2,6 +2,7 @@
 #include "wateringHandler.h"
 
 WebSocketsClient webSocket;
+wateringHandler wHandler;
 // handle check doc object this will catch if error or inappropriate
 void handleMessageCheck(JsonDocument wsData)
 {
@@ -35,7 +36,7 @@ void handleWsMessage(JsonDocument wsData)
     {
         if (wsData["data"]["event"] == "watering")
         {
-            handleWatering(true);
+            wHandler.setWatering(true, 74000);
         }
     }
     else

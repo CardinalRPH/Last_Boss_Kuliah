@@ -63,7 +63,7 @@ int sensorReader::readTankValue()
     return percentage;
 }
 
-int sensorReader::readLightValue()
+float sensorReader::readLightValue()
 {
     nonBlockingDelay(100);
     digitalWrite(soilPin1, LOW);

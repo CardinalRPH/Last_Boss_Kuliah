@@ -1,36 +1,38 @@
 #include "wateringHandler.h"
+#include "outputDev.h"
 
-bool isWatering = false;
 unsigned long previousMillis = 0;
-const unsigned long interval = 1000;
+outputDev otDev;
 
-bool handleWatering(bool manual)
+void wateringHandler::setWatering(bool manual, int wTime)
 {
-    if (manual)
+    isManual = manual;
+    waterTime = wTime;
+}
+
+bool wateringHandler::getWatering()
+{
+    if (isManual)
     {
-        // Jalankan penyiraman manual di sini, seperti menyalakan relay atau yang serupa
+       //Do watering here
         unsigned long currentMillis = millis();
-        Serial.println("Manual watering started");
+        Serial.println("Watering started");
         isWatering = true;
-        digitalWrite(BUILTIN_LED, HIGH);
-        previousMillis = currentMillis; // Tetapkan previousMillis saat ini
+        otDev.relaySwitch(waterTime);
+        previousMillis = currentMillis;
     }
 
-    // Periksa apakah masih dalam proses penyiraman
     if (isWatering)
     {
         unsigned long currentMillis = millis();
-        // Periksa apakah sudah mencapai interval penyiraman yang diinginkan
-        if (currentMillis - previousMillis >= interval)
+        //check is watering time finished
+        if (currentMillis - previousMillis >= waterTime)
         {
             Serial.println("Watering finished");
-            digitalWrite(BUILTIN_LED, LOW);
+            waterTime = 0;
             isWatering = false;
         }
         return true;
     }
-
-    // Periksa kondisi tanah dan lakukan penyiraman jika diperlukan
-    // Lakukan pengecekan dan pengiriman ke server di sini
     return false;
 }
