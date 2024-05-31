@@ -232,7 +232,7 @@ export const deviceWateringPost = async (req, res) => {
         }
 
         //send watering event to device
-        const exceptionRoom = sentToClientinRoom(userDevice.id, deviceId, {
+        const exceptionRoom = sentToClientinRoom(userMail, deviceId, {
             "type": "message",
             "data": {
                 "event": "watering"

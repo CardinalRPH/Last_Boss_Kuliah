@@ -118,8 +118,9 @@ export const deviceAuthPost = async (req, res) => {
         user: userData.data.email,
         deviceId
     }, false, {})
-
+    req.session.destroy()
     res.status(200).json({
         path: `/app/${encryptedPath}/${token}`
     })
+
 }

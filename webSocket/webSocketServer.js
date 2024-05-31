@@ -75,8 +75,10 @@ export default (server) => {
             if (!userInRoom) {
                 findRoom?.member.push({ id: deviceId, ws: ws })
                 waterRoom?.member.push({ id: deviceId, water: false })
-
             }
+            //do interval saveData
+            const clientMessageValue = messageStates.find(value => value.roomId === decode)
+            saveValueInInterval(decode, deviceId, clientMessageValue)
         } else if (user && deviceId === null) {
             const existUser = await getUserbyId({ email: user })
             if (!existUser) {
@@ -96,10 +98,6 @@ export default (server) => {
         ws.on('pong', () => {
             ws.send(JSON.stringify({ type: 'pong', message: 'ok' }))
         })
-
-        //do interval saveData
-        const clientMessageValue = messageStates.find(value => value.roomId === decode)
-        saveValueInInterval(decode, deviceId, clientMessageValue)
 
         //send message over the group room
         ws.on('message', async (message) => {
@@ -124,16 +122,17 @@ export default (server) => {
                         roomIndex.message = data
                     }
                     const waterStateIndex = waterRoom.member.indexOf(waterRoom.member.find(value => value.id == deviceId))
-                    console.log(data);
-                   
-                    const deviceWater = data?.waterEvent === true && data.id === deviceId
+                    // console.log(data);
+
+                    const deviceWater = data?.waterEvent === true
                     if (deviceWater && waterStateIndex !== -1 && waterRoom.member[waterStateIndex].water === false) {
                         //save watering into db
                         await saveDeviceWatering(decode, deviceId)
                         // change flag to true to stop looping
                         waterRoom.member[waterStateIndex].water = true
                         console.log(waterRoom.member);
-                    } else if (!deviceWater && waterStateIndex !== -1 && waterRoom.member[waterStateIndex].water === true) {
+                    }
+                    if (!deviceWater && waterStateIndex !== -1 && waterRoom.member[waterStateIndex].water === true) {
                         waterRoom.member[waterStateIndex].water = false
                         console.log(waterRoom.member);
                     }
@@ -141,6 +140,7 @@ export default (server) => {
                         //broadcast message in room
                         findRoom.member.forEach((client) => {
                             if (client.id === decode) {
+                                // console.log(JSON.stringify(data));
                                 client.ws.send(JSON.stringify(data))
                                 return
                             }
@@ -192,6 +192,7 @@ export const sentToClientinRoom = (roomId, clientId, message) => {
     if (!clientInRoom) {
         return false
     }
+
     clientInRoom.ws.send(JSON.stringify(message))
     return true
 }
