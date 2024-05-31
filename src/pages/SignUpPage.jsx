@@ -129,12 +129,7 @@ const SignUpPage = () => {
                                 </Grid>
                             </Grid>
                             <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 5 }}>
-                                {'Copyright © '}
-                                <Link color="inherit" href="https://mui.com/">
-                                    Your Website
-                                </Link>{' '}
-                                {new Date().getFullYear()}
-                                {'.'}
+                                {'Copyright © Reean 2024.'}
                             </Typography>
                         </Box>
 
