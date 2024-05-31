@@ -75,6 +75,7 @@ const PassResetPage = () => {
                 token
             }
         })
+        document.title = `Reset Password`
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (

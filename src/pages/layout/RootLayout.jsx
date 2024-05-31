@@ -29,32 +29,45 @@ const RootLayout = () => {
     const { data, loading, error, execute } = useDelete('/logOut')
     const [wsURL, setWsURL] = useState('wss://echo.websocket.org/')
     const [wsMessage, setWsMessage] = useState([])
+    const [isOpened, setIsOpened] = useState(false)
+    const [isError, setIsError] = useState(false)
+    const [isCLosed, setIsClosed] = useState(false)
 
     const handleWSOpen = () => {
-        setAlertComponent({
-            severity: 'info',
-            alertLabel: 'WS Info',
-            content: 'Websocket Opened'
-        })
-        setAlertState(true)
+        if (!isOpened) {
+            setAlertComponent({
+                severity: 'info',
+                alertLabel: 'WS Info',
+                content: 'Websocket Opened'
+            })
+            setAlertState(true)
+            setIsOpened(true)
+        }
     }
 
     const handleWSClose = () => {
-        setAlertComponent({
-            severity: 'info',
-            alertLabel: 'WS Info',
-            content: 'Websocket Closed'
-        })
-        setAlertState(true)
+        if (!isCLosed) {
+            setAlertComponent({
+                severity: 'info',
+                alertLabel: 'WS Info',
+                content: 'Websocket Closed'
+            })
+            setAlertState(true)
+            setIsClosed(true)
+        }
+
     }
 
     const handleWSError = () => {
-        setAlertComponent({
-            severity: 'error',
-            alertLabel: 'Error',
-            content: 'Websocket Fail to Connect'
-        })
-        setAlertState(true)
+        if (!isError) {
+            setAlertComponent({
+                severity: 'error',
+                alertLabel: 'Error',
+                content: 'Websocket Fail to Connect'
+            })
+            setAlertState(true)
+            setIsError(true)
+        }
     }
 
     const { lastMessage } = useWebSocket(wsURL === 'wss://echo.websocket.org/' ? wsURL : wsURI + wsURL, {
@@ -62,7 +75,7 @@ const RootLayout = () => {
         onClose: handleWSClose,
         onError: handleWSError,
         reconnectAttempts: 3,
-        shouldReconnect: ()=> true
+        shouldReconnect: () => true
     })
 
 
@@ -129,7 +142,8 @@ const RootLayout = () => {
             setWsMessage(updatedArr)
         }
         //need to know is wsMessage uses
-    }, [lastMessage, wsMessage])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [lastMessage])
 
     return (
         <>

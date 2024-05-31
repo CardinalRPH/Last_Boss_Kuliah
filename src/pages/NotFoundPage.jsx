@@ -1,10 +1,14 @@
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Box, Link, Typography } from "@mui/material"
+import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
 const NotFoundPage = () => {
     const navigate = useNavigate()
+    useEffect(() => {
+        document.title = `Page Not Found`
+    }, [])
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', minHeight: '90vh' }}>
             <Typography sx={{ mt: 1 }} variant="h5">404</Typography>

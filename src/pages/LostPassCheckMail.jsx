@@ -1,10 +1,16 @@
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Box, Divider, Typography } from "@mui/material"
+import { useEffect } from "react"
 import { useOutletContext } from "react-router-dom"
 
 const LostPassCheckMail = () => {
     const { resetEmail } = useOutletContext()
+
+    useEffect(() => {
+        document.title = `Email Sent`
+    }, [])
+
     return (
         <>
             <Typography variant="h4">Forgot Password</Typography>

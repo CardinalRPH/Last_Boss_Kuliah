@@ -161,6 +161,7 @@ const DevicePage = () => {
                 }
             })
         }
+        document.title = `Devices`
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (

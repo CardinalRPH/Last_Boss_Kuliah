@@ -139,6 +139,7 @@ const MustVerifyPage = () => {
                     userMail: payload.email
                 }
             })
+            document.title = `Access Block`
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

@@ -33,6 +33,13 @@ const DashboardPage = () => {
     })
   }
 
+
+  useEffect(() => {
+    // console.log(wsMessage.find(fVal => JSON.parse(fVal.data)?.Id === "08:F9:E0:6B:CB:87")?.data?.waterSensor);
+    
+    // console.log(JSON.parse(wsMessage.find(fVal=> JSON.parse(fVal.data)?.Id === "08:F9:E0:6B:CB:87")?.data)?.waterSensor);
+  }, [wsMessage])
+
   useEffect(() => {
     if (data) {
       //do data
@@ -77,6 +84,7 @@ const DashboardPage = () => {
         }
       })
     }
+    document.title = `Dashboard`
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -95,8 +103,8 @@ const DashboardPage = () => {
               lastWaterDay={day}
               lastWaterHour={value.waterVal[day].data.reverse()[0] || '00:00'}
               //from ws
-              isRain={wsMessage.find(fVal => fVal.Id === value.deviceId)?.rainSensor || false}
-              waterStorage={wsMessage.find(fVal => fVal.Id === value.deviceId)?.waterSensor || 0}
+              isRain={JSON.parse(wsMessage?.find(fVal => JSON.parse(fVal.data).Id === value.deviceId)?.data || '{"rainSensor":true}').rainSensor}
+              waterStorage={JSON.parse(wsMessage?.find(fVal => JSON.parse(fVal.data).Id === value.deviceId)?.data || '{"waterSensor":0}').waterSensor}
               //function
               onIconClick={() => navigate(`/devices/${value.deviceId}`)}
               onWatering={() => handleWatering(value.deviceId)}

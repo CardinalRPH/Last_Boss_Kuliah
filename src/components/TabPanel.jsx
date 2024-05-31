@@ -64,42 +64,42 @@ const TabPanel = ({ data }) => {
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
                 <PanelChart
-                    dateVal={data?.sensorVal?.Tuesday.date}
+                    dateVal={data?.sensorVal?.Tuesday.date || data?.waterVal?.Tuesday.date}
                     waterVal={data?.waterVal?.Tuesday.data || []}
                     sensorVal={data?.sensorVal?.Tuesday.data || []}
                 />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
                 <PanelChart
-                    dateVal={data?.sensorVal?.Wednesday.date}
+                    dateVal={data?.sensorVal?.Wednesday.date || data?.waterVal?.Wednesday.date}
                     waterVal={data?.waterVal?.Wednesday.data || []}
                     sensorVal={data?.sensorVal?.Wednesday.data || []}
                 />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={3}>
                 <PanelChart
-                    dateVal={data?.sensorVal?.Thursday.date}
+                    dateVal={data?.sensorVal?.Thursday.date || data?.waterVal?.Thursday.date}
                     waterVal={data?.waterVal?.Thursday.data || []}
                     sensorVal={data?.sensorVal?.Thursday.data || []}
                 />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={4}>
                 <PanelChart
-                    dateVal={data?.sensorVal?.Friday.date}
+                    dateVal={data?.sensorVal?.Friday.date || data?.waterVal?.Friday.date}
                     waterVal={data?.waterVal?.Friday.data || []}
                     sensorVal={data?.sensorVal?.Friday.data || []}
                 />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={5}>
                 <PanelChart
-                    dateVal={data?.sensorVal?.Saturday.date}
+                    dateVal={data?.sensorVal?.Saturday.date || data?.waterVal?.Saturday.date}
                     waterVal={data?.waterVal?.Saturday.data || []}
                     sensorVal={data?.sensorVal?.Saturday.data || []}
                 />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={6}>
                 <PanelChart
-                    dateVal={data?.sensorVal?.Sunday.date}
+                    dateVal={data?.sensorVal?.Sunday.date|| data?.waterVal?.Sunday.date}
                     waterVal={data?.waterVal?.Sunday.data || []}
                     sensorVal={data?.sensorVal?.Sunday.data || []}
                 />

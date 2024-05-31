@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, CircularProgress, Grid, Link, TextField, Typography } from "@mui/material"
+import { Box, Button, CircularProgress, Grid, Link, TextField, Typography } from "@mui/material"
 import TextFieldPassword from "../components/TextFieldPassword"
 import { useNavigate } from "react-router-dom"
 import { usePost } from "../hooks/dataHandler"
@@ -7,6 +7,8 @@ import AlertMain from "../components/AlertMain"
 import { useDispatch } from "react-redux"
 import { validAction } from "../stores/validState"
 import { authAction } from "../stores/authState"
+import ImgMain from "../assets/img3.webp"
+import LogoMain from "../assets/logo1fix.svg"
 
 const SignUpPage = () => {
     const navigate = useNavigate()
@@ -57,15 +59,17 @@ const SignUpPage = () => {
             setAlertState(true)
         }
     }, [error])
+
+    useEffect(() => {
+        document.title = `Sign Up`
+    }, [])
     return (
         <>
 
             <Box sx={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center' }}>
                 <Box sx={{ height: '100%', width: { xs: '100%', md: '45%' }, bgcolor: 'white', borderRadius: '5px' }}>
                     <Box sx={{ padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 5 }}>
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                            X
-                        </Avatar>
+                        <img src={LogoMain} width={45} style={{ margin: 1 }} />
                         <Typography component="h1" variant="h5">
                             Sign up
                         </Typography>
@@ -136,13 +140,14 @@ const SignUpPage = () => {
 
                     </Box>
                 </Box>
-                <Box sx={{ height: '95%', display: { xs: 'none', md: 'flex' }, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '55%', bgcolor: 'red', borderTopRightRadius: '5px', borderBottomRightRadius: '5px' }} >
-                    <Box sx={{ mx: 10, textAlign: 'left' }}>
-                        <Typography variant="h3">
-                            Welcome to X
+                <Box sx={{ height: '95%', display: { xs: 'none', md: 'flex' }, position: "relative", flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '55%', backgroundImage: `url(${ImgMain})`, backgroundPosition: "top", borderTopRightRadius: '5px', borderBottomRightRadius: '5px' }} >
+                    <Box sx={{ position: "absolute", width: "100%", height: "100%", backdropFilter: "brightness(90%)" }} />
+                    <Box sx={{ mx: 10, textAlign: 'left', zIndex: 0 }}>
+                        <Typography variant="h3" sx={{ bgcolor: "white" }}>
+                            Welcome to <br /> Smart Vertical Garden
                         </Typography>
-                        <Typography variant="body1">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem quis totam consequuntur laborum eos corporis, nulla est impedit, sequi velit recusandae minus obcaecati distinctio nostrum ipsum quasi sed saepe quaerat!
+                        <Typography variant="body1" sx={{ my: 2, color: "white" }}>
+                            Get the convenience of monitoring and controlling plant conditions in real time with the Smart Vertical Garden
                         </Typography>
                     </Box>
                 </Box>

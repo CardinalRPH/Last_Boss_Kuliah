@@ -2,10 +2,14 @@ import { faCircleCheck } from "@fortawesome/free-regular-svg-icons"
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Box, Divider, Link, Typography } from "@mui/material"
+import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
 const ResetPassScss = () => {
     const navigate = useNavigate()
+    useEffect(() => {
+        document.title = `Reset Success`
+    }, [])
     return (
         <>
             <Typography variant="h4">Forgot Password</Typography>

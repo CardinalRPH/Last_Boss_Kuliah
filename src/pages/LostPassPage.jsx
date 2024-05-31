@@ -48,12 +48,16 @@ const LostPassPage = () => {
             setAlertState(true)
         }
     }, [error])
+
+    useEffect(() => {
+        document.title = `Forget Password`
+    }, [])
     return (
         <>
             <Typography variant="h4">Forgot Password</Typography>
             <Divider />
             <Box sx={{ width: '100%', height: '90%', my: 2 }} component="form" onSubmit={handleSubmit}>
-                <Typography>Lost your password? Please enter your username or email address. You will receive a link to create a new password via email.</Typography>
+                <Typography>Lost your password? Please enter your email address. You will receive a link to create a new password via email.</Typography>
                 <TextField type="email" disabled={loading} label="Email Address" sx={{ my: 2 }} value={emailForm} onChange={(e) => setEmailForm(e.target.value)} fullWidth required />
                 <Button sx={{ my: 2 }} disabled={loading} type="submit" variant="contained">Reset Password</Button>
             </Box>

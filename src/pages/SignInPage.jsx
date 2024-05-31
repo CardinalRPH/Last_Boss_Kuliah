@@ -1,10 +1,12 @@
-import { Avatar, Box, Button, Checkbox, CircularProgress, FormControlLabel, Grid, Link, TextField, Typography } from "@mui/material"
+import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Grid, Link, TextField, Typography } from "@mui/material"
 import TextFieldPassword from "../components/TextFieldPassword"
 import { useNavigate } from "react-router-dom"
 import { usePost } from "../hooks/dataHandler"
 import { useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import { authAction } from "../stores/authState"
+import ImgMain from "../assets/img2.webp"
+import LogoMain from "../assets/logo1fix.svg"
 
 const SignInPage = () => {
     const navigate = useNavigate()
@@ -23,7 +25,7 @@ const SignInPage = () => {
         })
     }
     const handleChange = (e) => {
-        e.target.type === "text" || e.target.type === "password" || e.target.type ==="email" ?
+        e.target.type === "text" || e.target.type === "password" || e.target.type === "email" ?
             setSignInData(prevState => ({
                 ...prevState,
                 [e.target.name]: e.target.value
@@ -42,24 +44,27 @@ const SignInPage = () => {
         }
     }, [data, dispatch, navigate])
 
+    useEffect(() => {
+        document.title = `Sign In`
+    }, [])
+
     return (
         <Box sx={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center' }}>
-            <Box sx={{ height: '95%', display: { xs: 'none', md: 'flex' }, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '55%', bgcolor: 'red', borderTopLeftRadius: '5px', borderBottomLeftRadius: '5px' }}>
-                <Box sx={{ mx: 10, textAlign: 'right' }}>
-                    <Typography variant="h3">
+            <Box sx={{ height: '95%', display: { xs: 'none', md: 'flex' }, position: "relative", flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '55%', backgroundImage: `url(${ImgMain})`, backgroundPosition: "top", borderTopLeftRadius: '5px', borderBottomLeftRadius: '5px' }}>
+                <Box sx={{ position: "absolute", width: "100%", height: "100%", backdropFilter: "brightness(90%)" }} />
+                <Box sx={{ mx: 10, textAlign: 'left', zIndex: 0 }}>
+                    <Typography variant="h3" sx={{ bgcolor: "white" }}>
                         Welcome Back
                     </Typography>
-                    <Typography variant="body1">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem quis totam consequuntur laborum eos corporis, nulla est impedit, sequi velit recusandae minus obcaecati distinctio nostrum ipsum quasi sed saepe quaerat!
+                    <Typography variant="body1" sx={{ my: 2, color: "white" }}>
+                        Smart Vertical Garden is planting plants vertically with a smart concept, where with this technology plants, especially plants with a vertical concept, can be watered automatically or manually and their condition can also be monitored via the website.
                     </Typography>
                 </Box>
 
             </Box>
             <Box sx={{ height: '100%', width: { xs: '100%', md: '45%' }, bgcolor: 'white', borderRadius: '5px' }}>
                 <Box sx={{ padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 5 }}>
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        X
-                    </Avatar>
+                <img src={LogoMain} width={45} style={{ margin: 1 }} />
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
