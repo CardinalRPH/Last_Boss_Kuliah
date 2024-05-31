@@ -1,9 +1,10 @@
 #include "connectionSet.h"
 #include "httpManager.h"
 #include "wsManager.h"
-#include "connectionState.h"
 
 connectionState connState;
+outputDev outDevConn;
+wateringHandler waterHandler;
 void initWifi(const char *ssid, const char *wifiPassword)
 {
     WiFi.begin(ssid, wifiPassword);
@@ -30,6 +31,8 @@ void initConnection(const char *ssid, const char *wifiPassword, String email, St
     initWifi(ssid, wifiPassword);
     if (WiFi.status() != WL_CONNECTED)
     {
+        Serial.println("WiFi not connected");
+        outDevConn.buzzerRinger(2);
         return;
     }
     initHTTP(host, port, email, password, WiFi.macAddress());
@@ -37,5 +40,8 @@ void initConnection(const char *ssid, const char *wifiPassword, String email, St
     {
         parseError = deserializeJson(httpData, connState.getHttpPayload());
         initWebSocket(httpData["path"].as<String>(), port, host);
+    } else {
+        Serial.println("HTTP connection failed");
+        outDevConn.buzzerRinger(3);
     }
 }

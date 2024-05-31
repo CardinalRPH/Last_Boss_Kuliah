@@ -7,16 +7,15 @@ float readValSoil1;
 float readValSoil2;
 int readValLight;
 
-
 bool sensorReader::isRaining()
 {
     int rainState = digitalRead(rainPin);
 
     if (rainState == HIGH)
     {
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 
 float sensorReader::readSoil1()
@@ -28,8 +27,9 @@ float sensorReader::readSoil1()
     digitalWrite(soilPin1, HIGH);
     nonBlockingDelay(100);
     // return in percentage
-    readValSoil1 = 100.00 - ((analogRead(analogPin) / 1023.00) * 100.00);
+    readValSoil1 = analogRead(analogPin);
     digitalWrite(soilPin1, LOW);
+    // Serial.println(readValSoil1);
     return readValSoil1;
 }
 
@@ -42,8 +42,9 @@ float sensorReader::readSoil2()
     digitalWrite(soilPin2, HIGH);
     nonBlockingDelay(100);
     // return in percentage
-    readValSoil2 = 100.00 - ((analogRead(analogPin) / 1023.00) * 100.00);
+    readValSoil2 = analogRead(analogPin);
     digitalWrite(soilPin2, LOW);
+    // Serial.println(readValSoil2);
     return readValSoil2;
 }
 
@@ -59,7 +60,16 @@ int sensorReader::readTankValue()
     // read in cm
     distanceUltra = ((durationUltra / 2) * 0.343) / 10;
     // read in percentage
-    int percentage = (1 - (distanceUltra / emptyTankCm)) * 100;
+    int percentage = 100 - ((distanceUltra - fullTankCm) / (emptyTankCm - fullTankCm)) * 100;
+    // Serial.println(percentage);
+    if (percentage < 0)
+    {
+        percentage = 0;
+    }
+    else if (percentage > 100)
+    {
+        percentage = 100;
+    }
     return percentage;
 }
 
@@ -72,6 +82,7 @@ float sensorReader::readLightValue()
     nonBlockingDelay(500);
     readValLight = analogRead(analogPin);
     digitalWrite(lightPin, LOW);
+    // Serial.println(readValLight);
     return readValLight;
 }
 

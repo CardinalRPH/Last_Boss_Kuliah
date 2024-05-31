@@ -1,8 +1,7 @@
 #include "wateringHandler.h"
-#include "outputDev.h"
+#include "connectionSet.h"
 
 unsigned long previousMillis = 0;
-outputDev otDev;
 
 void wateringHandler::setWatering(bool manual, int wTime)
 {
@@ -14,18 +13,19 @@ bool wateringHandler::getWatering()
 {
     if (isManual)
     {
-       //Do watering here
+        // Do watering here
         unsigned long currentMillis = millis();
         Serial.println("Watering started");
         isWatering = true;
-        otDev.relaySwitch(waterTime);
+        isManual = false;
+        outDevConn.relaySwitch(waterTime);
         previousMillis = currentMillis;
     }
 
     if (isWatering)
     {
         unsigned long currentMillis = millis();
-        //check is watering time finished
+        // check is watering time finished
         if (currentMillis - previousMillis >= waterTime)
         {
             Serial.println("Watering finished");

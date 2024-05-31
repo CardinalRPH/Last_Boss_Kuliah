@@ -2,18 +2,17 @@
 #include "wsManager.h"
 #include "sentMsgHandler.h"
 #include "connectionSet.h"
-#include "outputDev.h"
 #include "time.h"
 #include "fuzzyLogic.h"
-#include "wateringHandler.h"
+// #include "wateringHandler.h"
 
 // Wifi Setup
 const char *ssid = "PARZ!VAL X";
 const char *wifiPassword = "batusarino1";
 
 // User Account
-const String email = "example@mail.com";
-const String password = "secret";
+const String email = "koneksigagal63@gmail.com";
+const String password = "koneksigagal63";
 
 // insert Host and port
 const String host = "192.168.1.12";
@@ -23,8 +22,8 @@ const int port = 5000;
 #define LIGHT_PIN 5    // D1
 #define ULTRA_TRIG 0   // D3
 #define ULTRA_ECHO 2   // D4
-#define RELAY_PIN 14   // D5
-#define RAIN_PIN_DO 12 // D6
+#define RELAY_PIN 12   // D6
+#define RAIN_PIN_DO 14 // D5
 #define SOIL_PIN_1 13  // D7
 #define SOIL_PIN_2 15  // D8
 
@@ -36,17 +35,17 @@ int timeZone = 7 * 3600;
 int dst = 0;
 
 // Setup ultrasonic tank distance in cm
-int emptyTankDistance = 70;
-int fullTankDistance = 30;
+int emptyTankDistance = 23;
+int fullTankDistance = 5;
 
 unsigned long lastFuzzyTime = 0;
 const unsigned long fuzzyInterval = 5400000;
 unsigned long lastMsgTime = 0;
-const unsigned long interval = 2000; // interval for sending message
+const unsigned long interval = 5000; // interval for sending message
+int hours = 0;
 fuzzyLogic fyLogic;
 sensorReader snReader;
-outputDev outDev;
-wateringHandler waterHandler;
+// wateringHandler waterHandler;
 void setup()
 {
   // put your setup code here, to run once:
@@ -62,7 +61,7 @@ void setup()
   // setup pin and value
   snReader.setupSensorPin(RAIN_PIN_DO, SOIL_PIN_1, SOIL_PIN_2, ULTRA_TRIG, ULTRA_ECHO, LIGHT_PIN, ANALOG_PIN);
   snReader.setupTankValue(emptyTankDistance, fullTankDistance);
-  outDev.setupOutputPin(BUZZ_PIN, RELAY_PIN);
+  outDevConn.setupOutputPin(BUZZ_PIN, RELAY_PIN);
   // fuzzy declaration
   fyLogic.initFuzzy();
   fyLogic.implementFuzzyRules();
@@ -73,43 +72,51 @@ void setup()
 void loop()
 {
   // put your main code here, to run repeatedly:
+  // Serial.print("Rain : ");
+  // Serial.println(snReader.isRaining());
+  // Serial.print("UltraSonic : ");
+  // Serial.println(snReader.readTankValue());
+  // Serial.print("Soil1 :");
+  // Serial.println(snReader.readSoil1());
+  // Serial.print("Soil2 :");
+  // Serial.println(snReader.readSoil2());
+  // Serial.print("Light ohm :");
+  // Serial.println(snReader.readLightValue());
   if (connState.getHttpResponseCode() > 0)
   {
     wsLoop();
-  }
-  unsigned long currentMillis = millis();
-  if (currentMillis - lastFuzzyTime >= fuzzyInterval)
-  {
     // get current tiime
     time_t now = time(nullptr);
     struct tm *p_tm = localtime(&now);
     // get current hour
-    int hours = p_tm->tm_hour || 0;
-    bool isRain = snReader.isRaining();
-    int waterTankVl = snReader.readTankValue();
-    float soilTop = snReader.readSoil1();
-    float soilBot = snReader.readSoil2();
-    float lightVal = snReader.readLightValue();
-    float soilMean = (soilTop + soilBot) / 2;
+    hours = p_tm->tm_hour;
+  }
 
-    if (hours >= 5 && hours <= 19 && !isRain && waterTankVl >= 30)
+  unsigned long currentMillis = millis();
+  // Serial.println(hours);
+  if (hours >= 5 && hours <= 19 && snReader.isRaining() ==false && snReader.readTankValue() >= 30)
+  {
+    if (currentMillis - lastFuzzyTime >= fuzzyInterval)
     {
+      float soilMean = (snReader.readSoil1() + snReader.readSoil2()) / 2;
       // handle fuzzy logic
-      int pumpSecond = fyLogic.getResult(soilMean, lightVal);
+      int pumpSecond = fyLogic.getResult(soilMean, snReader.readLightValue());
       if (pumpSecond > 0)
       {
         int pumpMiliSecond = pumpSecond * 1000;
+        Serial.println(pumpMiliSecond);
         waterHandler.setWatering(true, pumpMiliSecond);
       }
       // end of fuzzy
+      lastFuzzyTime = currentMillis;
     }
-    lastFuzzyTime = currentMillis;
   }
   if (currentMillis - lastMsgTime >= interval)
   {
-    if (connState.getHttpResponseCode() > 0)
+    if (connState.getWSConnected() == true)
     {
-      handleSentMsgActivity(); // Panggil fungsi untuk mengirim pesan
+      // Serial.println(snReader.readSoil1());
+      handleSentMsgActivity(waterHandler.getWatering(), snReader.readSoil1(), snReader.readSoil2(), snReader.readTankValue(), snReader.readLightValue(), snReader.isRaining()); // Panggil fungsi untuk mengirim pesan
     }
     lastMsgTime = currentMillis; // Perbarui waktu terakhir pesan dikirim
   }

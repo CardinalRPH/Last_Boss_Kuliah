@@ -15,3 +15,11 @@ int connectionState::getHttpResponseCode() {
 String connectionState::getHttpPayload() {
     return httpPayload;
 }
+
+void connectionState::setWSConnected(bool value) {
+    wsConnected = value;
+}
+
+bool connectionState::getWSConnected() {
+    return wsConnected;
+}

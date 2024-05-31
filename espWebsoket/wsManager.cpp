@@ -1,8 +1,7 @@
 #include "wsManager.h"
-#include "wateringHandler.h"
+#include "connectionSet.h"
 
 WebSocketsClient webSocket;
-wateringHandler wHandler;
 // handle check doc object this will catch if error or inappropriate
 void handleMessageCheck(JsonDocument wsData)
 {
@@ -36,7 +35,7 @@ void handleWsMessage(JsonDocument wsData)
     {
         if (wsData["data"]["event"] == "watering")
         {
-            wHandler.setWatering(true, 74000);
+            waterHandler.setWatering(true, 74000);
         }
     }
     else
@@ -52,15 +51,19 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length)
     switch (type)
     {
     case WStype_DISCONNECTED:
+        connState.setWSConnected(false);
         Serial.printf("[WSc] Disconnected!\n");
+        outDevConn.buzzerRinger(4);
         break;
     case WStype_CONNECTED:
+        connState.setWSConnected(true);
         Serial.printf("[WSc] Connected to url: %s\n", payload);
+        outDevConn.buzzerRinger(1);
         // send message to server when Connected
         webSocket.sendTXT("{\"type\":\"info\",\"data\":\"Client Connected to Server\"}");
         break;
     case WStype_TEXT:
-        // Serial.printf("[WSc] get text: %s\n", payload);
+        Serial.printf("[WSc] get text: %s\n", payload);
         parseError = deserializeJson(wsData, payload);
         if (parseError)
         {

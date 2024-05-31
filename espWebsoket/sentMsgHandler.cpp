@@ -1,12 +1,8 @@
 #include "sentMsgHandler.h"
 #include "wsManager.h"
-#include "wateringHandler.h"
-#include "sensorReader.h"
 
-wateringHandler wHandlers;
-void handleSentMsgActivity()
+void handleSentMsgActivity(bool waterEvent, float readSoil1, float readSoil2, int readTankValue, float readLightValue, bool isRaining)
 {
-    sensorReader snReader;
     JsonDocument docToSent;
 
     docToSent.clear(); // Bersihkan obj1
@@ -15,14 +11,15 @@ void handleSentMsgActivity()
 
     obj1["type"] = "message";
     obj2["Id"] = WiFi.macAddress();
-    obj2["waterEvent"] = wHandlers.getWatering();
-    obj2["soilSensorTop"] = snReader.readSoil1();
-    obj2["soilSensorBot"] = snReader.readSoil2();
-    obj2["waterSensor"] = snReader.readTankValue();
-    obj2["lightSensor"] = snReader.readLightValue();
-    obj2["rainSensor"] = snReader.isRaining();
+    obj2["waterEvent"] = waterEvent;
+    obj2["soilSensorTop"] = readSoil1;
+    obj2["soilSensorBot"] = readSoil2;
+    obj2["waterSensor"] = readTankValue;
+    obj2["lightSensor"] = readLightValue;
+    obj2["rainSensor"] = isRaining;
 
     String jsonString;
     serializeJson(docToSent, jsonString);
+    Serial.println(jsonString);
     wsSentMsg(jsonString);
 }

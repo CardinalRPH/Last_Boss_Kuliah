@@ -5,9 +5,9 @@
 class wateringHandler
 {
 private:
-    bool isWatering = false;
-    int waterTime = 0;
-    bool isManual = false;
+    bool isWatering;
+    int waterTime;
+    bool isManual;
 
 public:
     void setWatering(bool state, int wTime);
