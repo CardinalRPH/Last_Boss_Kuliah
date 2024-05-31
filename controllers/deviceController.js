@@ -110,7 +110,7 @@ export const devicePut = async (req, res) => {
     //edit  an existing Device in the DB
     const { deviceId, userMail, deviceName } = req.body
     //validating
-    if (!deviceName || deviceId) {
+    if (!deviceName || !deviceId) {
         res.status(400).json({
             error: "Missing Data!"
         })
