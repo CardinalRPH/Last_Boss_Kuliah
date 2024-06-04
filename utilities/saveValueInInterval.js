@@ -1,10 +1,11 @@
 import { saveDeviceSensorUpdate } from "./serverDeviceControll.js"
 
 export default (userMail, deviceId, deviceData) => {
+    console.log("Registered to Save");
     setInterval(async () => {
         if (deviceData) {
-            const { soilSensorTop, soilSensorBot, waterSensor, lightSensor, rainSensor } = deviceData.message
-            if (soilSensorBot && soilSensorTop && waterSensor && lightSensor && rainSensor) {
+            if (deviceData?.message) {
+                const { soilSensorTop, soilSensorBot, waterSensor, lightSensor, rainSensor } = deviceData.message
                 await saveDeviceSensorUpdate(userMail, deviceId, { soilSensorBot, soilSensorTop, waterSensor, lightSensor, rainSensor })
             }
         }

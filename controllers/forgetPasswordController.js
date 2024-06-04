@@ -1,4 +1,4 @@
-import { addUpdateUserToken, deleteUserToken, getUserToken } from "../models/fireStoreToken.js"
+import { addUpdateUserToken, deleteUserToken, getUserToken } from "../models/firestoreToken.js"
 import { getUserbyId, updateUser } from "../models/firestoreUser.js"
 import { Bhash } from "../security/bcryptPassword.js"
 import generateOTP from "../security/generateOTP.js"
