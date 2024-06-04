@@ -66,7 +66,7 @@ const PanelChart = ({ dateVal, waterVal = [], sensorVal = [] }) => {
                 <Box sx={{ width: '100%', height: 300 }}>
                     <LineChart
                         series={[
-                            { data: sensorVal.map(value => value.lightSensor), label: 'Rain' },
+                            { data: sensorVal.map(value => value.rainSensor), label: 'Rain' },
                         ]}
                         xAxis={[{ scaleType: 'point', data: sensorVal.map(value => value.time) }]}
                     />
