@@ -11,7 +11,8 @@ private:
 public:
     void setupOutputPin(byte buzzer_pin, byte relay_pin);
     void buzzerRinger(int ringTimes);
-    void relaySwitch(int millisecond);
+    void relaySwitchOn();
+    void relaySwitchOff();
 };
 
 #endif

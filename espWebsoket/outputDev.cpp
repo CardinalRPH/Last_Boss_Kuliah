@@ -11,18 +11,30 @@ void outputDev::setupOutputPin(byte buzzer_pin, byte relay_pin)
 
 void outputDev::buzzerRinger(int ringTimes)
 {
-    for (int i = 0; i < ringTimes; i++)
+    if (buzzerPin)
     {
-        digitalWrite(buzzerPin, HIGH);
-        nonBlockingDelay(500);
-        digitalWrite(buzzerPin, LOW);
-        nonBlockingDelay(200);
+        for (int i = 0; i < ringTimes; i++)
+        {
+            digitalWrite(buzzerPin, HIGH);
+            nonBlockingDelay(500);
+            digitalWrite(buzzerPin, LOW);
+            nonBlockingDelay(200);
+        }
     }
 }
 
-void outputDev::relaySwitch(int millisecond)
+void outputDev::relaySwitchOn()
 {
-    digitalWrite(relayPin, HIGH);
-    nonBlockingDelay(millisecond);
-    digitalWrite(relayPin, LOW);
+    if (relayPin)
+    {
+        digitalWrite(relayPin, LOW);
+    }
+}
+
+void outputDev::relaySwitchOff()
+{
+    if (relayPin)
+    {
+        digitalWrite(relayPin, HIGH);
+    }
 }

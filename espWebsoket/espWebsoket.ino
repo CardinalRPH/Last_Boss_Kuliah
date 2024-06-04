@@ -15,7 +15,7 @@ const String email = "koneksigagal63@gmail.com";
 const String password = "koneksigagal63";
 
 // insert Host and port
-const String host = "192.168.1.12";
+const String host = "192.168.1.11";
 const int port = 5000;
 
 // setup pin use GPIO

@@ -18,7 +18,7 @@ bool wateringHandler::getWatering()
         Serial.println("Watering started");
         isWatering = true;
         isManual = false;
-        outDevConn.relaySwitch(waterTime);
+        outDevConn.relaySwitchOn();
         previousMillis = currentMillis;
     }
 
@@ -28,6 +28,7 @@ bool wateringHandler::getWatering()
         // check is watering time finished
         if (currentMillis - previousMillis >= waterTime)
         {
+            outDevConn.relaySwitchOff();
             Serial.println("Watering finished");
             waterTime = 0;
             isWatering = false;
