@@ -1,7 +1,7 @@
 import { WebSocketServer } from "ws"
 import { decrypt } from "../security/aesManager.js"
 import { verifyToken } from "../security/jwtManager.js"
-import { messageStates, userSockets, waterStates } from "./socketStates.js"
+import { userSockets } from "./socketStates.js"
 import { saveDeviceWatering } from "../utilities/serverDeviceControll.js"
 import saveValueInInterval from "../utilities/saveValueInInterval.js"
 import { getUserDevicebyId } from "../models/firestoreDevice.js"
@@ -58,12 +58,11 @@ export default (server) => {
         const availableRoom = userSockets.find(item => item.roomId === decode)
         if (!availableRoom) {
             userSockets.push({ roomId: decode, member: [] })
-            messageStates.push({ roomId: decode, message: null })
-            waterStates.push({ roomId: decode, member: [] })
         }
-
+        const saveInterval = new saveValueInInterval()
+        const saveDeviceWater = new saveDeviceWatering()
         const findRoom = userSockets.find(item => item.roomId === decode)
-        const waterRoom = waterStates.find(item => item.roomId === decode)
+        console.log(findRoom);
         if (user && deviceId) {
             const existDevice = await getUserDevicebyId({ email: user, deviceId })
             if (!existDevice) {
@@ -74,11 +73,9 @@ export default (server) => {
             const userInRoom = findRoom?.member.find(item => item.id === deviceId)
             if (!userInRoom) {
                 findRoom?.member.push({ id: deviceId, ws: ws })
-                waterRoom?.member.push({ id: deviceId, water: false })
             }
             //do interval saveData
-            const clientMessageValue = messageStates.find(value => value.roomId === decode)
-            saveValueInInterval(decode, deviceId, clientMessageValue)
+            saveInterval.saveValue(decode, deviceId)
         } else if (user && deviceId === null) {
             const existUser = await getUserbyId({ email: user })
             if (!existUser) {
@@ -117,24 +114,14 @@ export default (server) => {
                     ws.send(JSON.stringify({ type: 'info', message: 'Server Connected to Client' }))
                 }
                 if (type === "message" && typeof data === "object") {
-                    const roomIndex = messageStates.find(value => value.roomId === decode)
-                    if (roomIndex) {
-                        roomIndex.message = data
-                    }
-                    const waterStateIndex = waterRoom.member.indexOf(waterRoom.member.find(value => value.id == deviceId))
+                    saveInterval.setDeviceData(data)
                     // console.log(data);
 
-                    const deviceWater = data?.waterEvent === true
-                    if (deviceWater && waterStateIndex !== -1 && waterRoom.member[waterStateIndex].water === false) {
+                    if (data?.waterEvent === true) {
                         //save watering into db
-                        await saveDeviceWatering(decode, deviceId)
-                        // change flag to true to stop looping
-                        waterRoom.member[waterStateIndex].water = true
-                        console.log(waterRoom.member);
-                    }
-                    if (!deviceWater && waterStateIndex !== -1 && waterRoom.member[waterStateIndex].water === true) {
-                        waterRoom.member[waterStateIndex].water = false
-                        console.log(waterRoom.member);
+                        await saveDeviceWater.saveWatering(decode, deviceId)
+                    } else {
+                        saveDeviceWater.setIsWatering(false)
                     }
                     if (findRoom) {
                         //broadcast message in room
@@ -142,7 +129,7 @@ export default (server) => {
                             if (client.id === decode) {
                                 // console.log(JSON.stringify(data));
                                 client.ws.send(JSON.stringify(data))
-                                return
+                                // return
                             }
                         })
                     }
@@ -159,10 +146,36 @@ export default (server) => {
             if (findRoom) {
                 const roomIndex = userSockets.indexOf(findRoom)
                 const memberIndex = findRoom.member.findIndex(item => item.ws === ws)
+
                 console.log(`Device ${deviceId || user} disconeccted`);
                 //remove user from room
                 if (memberIndex !== -1) {
                     userSockets[roomIndex].member.splice(memberIndex, 1)
+                }
+                if (user && deviceId) {
+                    saveInterval.setBreaker(true)
+                    saveDeviceWater.setIsWatering(false)
+                }
+                //remove room from group if member is 0
+                if (userSockets[roomIndex].member.length == 0) {
+                    userSockets.splice(roomIndex, 1)
+                }
+            }
+        })
+        ws.on('error', (error) => {
+            console.error(`WebSocket error: ${error}`);
+            if (findRoom) {
+                const roomIndex = userSockets.indexOf(findRoom)
+                const memberIndex = findRoom.member.findIndex(item => item.ws === ws)
+
+                console.log(`Device ${deviceId || user} disconeccted`);
+                //remove user from room
+                if (memberIndex !== -1) {
+                    userSockets[roomIndex].member.splice(memberIndex, 1)
+                }
+                if (user && deviceId) {
+                    saveInterval.setBreaker(true)
+                    saveDeviceWater.setIsWatering(false)
                 }
                 //remove room from group if member is 0
                 if (userSockets[roomIndex].member.length == 0) {

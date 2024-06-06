@@ -1,36 +1,47 @@
 import { updateDevice } from "../models/firestoreDevice.js"
 import getCurrentTime from "./getCurrentTime.js"
 
-export const saveDeviceWatering = async (userMail, deviceId) => {
-    const { day, date, time } = getCurrentTime()
+export class saveDeviceWatering {
+    constructor() {
+        this.isWatering = false
+    }
 
-    try {
-        const updatedDevice = await updateDevice({
-            email: userMail,
-            deviceId,
-            deviceData: (dbData) => {
-                const { waterVal } = dbData
-                const { date: dbDate } = waterVal[day]
-                if (dbDate === date) {
-                    const updatedWaterVal = { ...waterVal }
-                    updatedWaterVal[day]?.data.push(time)
-                    return { waterVal: updatedWaterVal }
-                } else {
-                    const updatedWaterVal = { ...waterVal }
-                    updatedWaterVal[day].date = date
-                    updatedWaterVal[day].data = [time]
-                    return { waterVal: updatedWaterVal }
+    async saveWatering(userMail, deviceId) {
+        if (this.isWatering === false) {
+            const { day, date, time } = getCurrentTime()
+            try {
+                this.isWatering = true
+                const updatedDevice = await updateDevice({
+                    email: userMail,
+                    deviceId,
+                    deviceData: (dbData) => {
+                        const { waterVal } = dbData
+                        const { date: dbDate } = waterVal[day]
+                        if (dbDate === date) {
+                            const updatedWaterVal = { ...waterVal }
+                            updatedWaterVal[day]?.data.push(time)
+                            return { waterVal: updatedWaterVal }
+                        } else {
+                            const updatedWaterVal = { ...waterVal }
+                            updatedWaterVal[day].date = date
+                            updatedWaterVal[day].data = [time]
+                            return { waterVal: updatedWaterVal }
+                        }
+
+                    }
+                })
+                if (!updatedDevice) {
+                    console.log("SaveDeviceWater: Device Not Found");
+                    return
                 }
 
+            } catch (error) {
+                console.error(error);
             }
-        })
-        if (!updatedDevice) {
-            console.log("SaveDeviceWater: Device Not Found");
-            return
         }
-
-    } catch (error) {
-        console.error(error);
+    }
+    setIsWatering(value = false) {
+        this.isWatering = value
     }
 }
 
