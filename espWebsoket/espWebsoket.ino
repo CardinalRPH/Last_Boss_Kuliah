@@ -57,7 +57,9 @@ void setup()
     configTime(timeZone, dst, "pool.ntp.org", "time.nist.gov");
   }
 
-  // pinMode(BUILTIN_LED, OUTPUT);
+  pinMode(BUILTIN_LED, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+
   // setup pin and value
   snReader.setupSensorPin(RAIN_PIN_DO, SOIL_PIN_1, SOIL_PIN_2, ULTRA_TRIG, ULTRA_ECHO, LIGHT_PIN, ANALOG_PIN);
   snReader.setupTankValue(emptyTankDistance, fullTankDistance);
@@ -65,23 +67,11 @@ void setup()
   // fuzzy declaration
   fyLogic.initFuzzy();
   fyLogic.implementFuzzyRules();
-
-  // digitalWrite(LED_BUILTIN, LOW);
 }
 
 void loop()
 {
-  // put your main code here, to run repeatedly:
-  // Serial.print("Rain : ");
-  // Serial.println(snReader.isRaining());
-  // Serial.print("UltraSonic : ");
-  // Serial.println(snReader.readTankValue());
-  // Serial.print("Soil1 :");
-  // Serial.println(snReader.readSoil1());
-  // Serial.print("Soil2 :");
-  // Serial.println(snReader.readSoil2());
-  // Serial.print("Light ohm :");
-  // Serial.println(snReader.readLightValue());
+
   if (connState.getHttpResponseCode() > 0)
   {
     wsLoop();

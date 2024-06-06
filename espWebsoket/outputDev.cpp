@@ -7,6 +7,7 @@ void outputDev::setupOutputPin(byte buzzer_pin, byte relay_pin)
     relayPin = relay_pin;
     pinMode(buzzerPin, OUTPUT);
     pinMode(relayPin, OUTPUT);
+    digitalWrite(relayPin, HIGH);
 }
 
 void outputDev::buzzerRinger(int ringTimes)
