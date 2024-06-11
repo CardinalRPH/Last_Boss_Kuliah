@@ -13,9 +13,9 @@ private:
     FuzzySet *drySoil = new FuzzySet(550, 700, 1024, 1024);
 
     // set LDR
-    FuzzySet *lowLight = new FuzzySet(0, 0, 600, 755);
-    FuzzySet *mediumLight = new FuzzySet(600, 755, 755, 910);
-    FuzzySet *highLight = new FuzzySet(755, 910, 1024, 1024);
+    FuzzySet *lowLight = new FuzzySet(0, 0, 600, 750);
+    FuzzySet *mediumLight = new FuzzySet(600, 750, 750, 900);
+    FuzzySet *highLight = new FuzzySet(750, 900, 1024, 1024);
 
     // set Output Pump
     FuzzySet *pumpOff = new FuzzySet(0, 0, 0, 0);
