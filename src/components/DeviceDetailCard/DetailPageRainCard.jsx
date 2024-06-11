@@ -14,7 +14,7 @@ const DetailPageRainCard = ({ value }) => {
             }}
         >
             <Box sx={{ borderRadius: '50%', bgcolor: 'lightgrey', width: 60, height: 60, display: 'flex', justifyContent: 'center', alignItems: 'center', m: 1 }}>
-                <FontAwesomeIcon icon={faCloudRain} size="2xl" style={{ marginTop: 1, marginBottom: 1 }} />
+                <FontAwesomeIcon icon={faCloudRain} size="2xl" style={{ marginTop: 1, marginBottom: 1, color: value ? "royalblue" : "black" }} />
             </Box>
             <Box sx={{ m: 1 }}>
                 <Typography variant="h6">{value ? 'Yes' : 'No'}</Typography>

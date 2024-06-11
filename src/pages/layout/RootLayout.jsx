@@ -26,7 +26,7 @@ const RootLayout = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { payload, isAuthenticated } = useSelector(state => state.auth)
-    const { data, loading, error, execute } = useDelete('/logOut')
+    const { data, loading, error, execute } = useDelete('logOut')
     const [wsURL, setWsURL] = useState('wss://echo.websocket.org/')
     const [wsMessage, setWsMessage] = useState([])
     const [isOpened, setIsOpened] = useState(false)

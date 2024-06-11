@@ -1,4 +1,4 @@
-import { faCubes, faMicrochip, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo, faCubes, faMicrochip, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default [
@@ -18,6 +18,12 @@ export default [
         name: 'Profile',
         route: '/profile',
         icon: <FontAwesomeIcon icon={faUser} size="xl" />
+
+    },
+    {
+        name: 'About',
+        route: '/about',
+        icon: <FontAwesomeIcon icon={faCircleInfo} size="xl" />
 
     },
 ]

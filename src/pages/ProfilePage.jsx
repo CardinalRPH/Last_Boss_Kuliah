@@ -5,6 +5,8 @@ import { useDelete, useGet, usePut } from "../hooks/dataHandler"
 import DialogAlert from "../components/DialogAlert"
 import { useDispatch, useSelector } from "react-redux"
 import { authAction } from "../stores/authState"
+import PasswordMeter from "../components/PasswordMeter"
+import TextFieldPassword from "../components/TextFieldPassword"
 
 const ProfilePage = () => {
     const [readOnly, setReadOnly] = useState(true)
@@ -65,7 +67,7 @@ const ProfilePage = () => {
         }
         if (dataPut) {
             //do
-            dispatch(authAction.updateStateLocal({name:textFieldVal.userName}))
+            dispatch(authAction.updateStateLocal({ name: textFieldVal.userName }))
             setTextNameDefValue({ userMail: textFieldVal.userMail, userName: textFieldVal.userName })
             setAlertComponent({
                 severity: 'success',
@@ -169,14 +171,17 @@ const ProfilePage = () => {
                                 flexWrap: { xs: 'wrap', md: 'nowrap' }
                             }}
                         >
-                            <TextField name="userOldPass" onChange={handleTextChange} value={textFieldVal.userOldPass} sx={{ mx: 2, width: { xs: '100%', md: '50%' } }} label="Old Password" inputProps={{ readOnly }} required={textFieldVal.userNewPass !== ''} />
-                            <TextField name="userNewPass" onChange={handleTextChange} value={textFieldVal.userNewPass} sx={{ mx: 2, width: { xs: '100%', md: '50%' } }} label="New Password" inputProps={{ readOnly }} required={textFieldVal.userOldPass !== ''} />
+                            <TextFieldPassword name="userOldPass" onChange={handleTextChange} value={textFieldVal.userOldPass} label="Old Password" readOnly={readOnly} required={textFieldVal.userNewPass !== ''} containerSx={{ mx: 2, width: { xs: '100%', md: '50%' } }}  />
+                            <Box sx={{ mx: 2, width: { xs: '100%', md: '50%' }, position: "relative" }}>
+                                <TextFieldPassword name="userNewPass" onChange={handleTextChange} value={textFieldVal.userNewPass} label="New Password" readOnly={readOnly} required={textFieldVal.userOldPass !== ''} containerSx={{width: "100%"}} />
+                                <PasswordMeter password={textFieldVal.userNewPass} containerSx={{ position: "absolute", width: "100%" }} />
+                            </Box>
                         </Paper>
-                        <Box sx={{ my: 1, position: 'relative', width:'100%', display:'flex', justifyContent:'center' }}>
+                        <Box sx={{ my: 1, position: 'relative', width: '100%', display: 'flex', justifyContent: 'center' }}>
                             {readOnly && !loadingPut ? (
                                 <>
-                                    <Button sx={{ m: 2 }} type="button" onClick={(e) => { e.preventDefault();  setReadOnly(false)}} variant="outlined">Edit</Button>
-                                    <Button sx={{ m: 2, position: {xs:'relative', lg:'absolute'}, left: 0, bottom: 0 }} onClick={() => setDialogOpen(true)} color="error" variant="outlined">Delete Account</Button>
+                                    <Button sx={{ m: 2 }} type="button" onClick={(e) => { e.preventDefault(); setReadOnly(false) }} variant="outlined">Edit</Button>
+                                    <Button sx={{ m: 2, position: { xs: 'relative', lg: 'absolute' }, left: 0, bottom: 0 }} onClick={() => setDialogOpen(true)} color="error" variant="outlined">Delete Account</Button>
                                 </>
 
                             ) : (

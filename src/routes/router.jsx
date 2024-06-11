@@ -20,6 +20,7 @@ import UForgetGuard from "../services/UForgetGuard"
 import ResetPassScss from "../pages/ResetPassScss"
 import ResetScssGuard from "../services/ResetScssGuard"
 import NotFoundPage from "../pages/NotFoundPage"
+import AboutPage from "../pages/AboutPage"
 
 
 const AppRouter = createBrowserRouter([
@@ -118,6 +119,10 @@ const AppRouter = createBrowserRouter([
             {
                 path: '/profile',
                 element: <ProfilePage />
+            },
+            {
+                path: '/about',
+                element: <AboutPage />
             },
         ]
     },

@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux"
 import { authAction } from "../stores/authState"
 import ImgMain from "../assets/img2.webp"
 import LogoMain from "../assets/logo1fix.svg"
+import emailValidator from "../utilities/emailValidator"
 
 const SignInPage = () => {
     const navigate = useNavigate()
@@ -16,6 +17,7 @@ const SignInPage = () => {
         userPass: '',
         keepSignIn: false
     })
+    const [errorEmail, setErrorEmail] = useState(false)
     const { loading, data, error, execute } = usePost("userLogin")
 
     const handleSubmit = (e) => {
@@ -35,6 +37,15 @@ const SignInPage = () => {
                 [e.target.name]: e.target.checked
             }))
 
+    }
+
+    const handleEmailChange = (e) => {
+        if (emailValidator(e.target.value)) {
+            setErrorEmail(false)
+        } else {
+            setErrorEmail(true)
+        }
+        handleChange(e)
     }
 
     useEffect(() => {
@@ -64,18 +75,20 @@ const SignInPage = () => {
             </Box>
             <Box sx={{ height: '100%', width: { xs: '100%', md: '45%' }, bgcolor: 'white', borderRadius: '5px' }}>
                 <Box sx={{ padding: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 5 }}>
-                <img src={LogoMain} width={45} style={{ margin: 1 }} />
+                    <img src={LogoMain} width={45} style={{ margin: 1 }} />
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
                     <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }} component="form" onSubmit={handleSubmit}>
                         <TextField
+                            error={errorEmail}
+                            onBlur={()=> signInData.userMail === "" && setErrorEmail(false)}
                             margin="normal"
                             required
                             fullWidth
                             label="Email Address"
                             name="userMail"
-                            onChange={handleChange}
+                            onChange={handleEmailChange}
                             value={signInData.userMail}
                             autoComplete="email"
                             type="email"

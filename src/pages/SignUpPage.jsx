@@ -9,11 +9,14 @@ import { validAction } from "../stores/validState"
 import { authAction } from "../stores/authState"
 import ImgMain from "../assets/img3.webp"
 import LogoMain from "../assets/logo1fix.svg"
+import PasswordMeter from "../components/PasswordMeter"
+import emailValidator from "../utilities/emailValidator"
 
 const SignUpPage = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const { data, loading, error, execute } = usePost("createAccount")
+    const [errorEmail, setErrorEmail] = useState(false)
     const [inputForm, setInputForm] = useState({
         userName: "",
         userPass: "",
@@ -38,6 +41,15 @@ const SignUpPage = () => {
             ...prevState,
             [e.target.name]: e.target.value
         }))
+    }
+
+    const handleEmailChange = (e) => {
+        if (emailValidator(e.target.value)) {
+            setErrorEmail(false)
+        } else {
+            setErrorEmail(true)
+        }
+        handleChange(e)
     }
 
     useEffect(() => {
@@ -87,14 +99,16 @@ const SignUpPage = () => {
                                 disabled={loading}
                             />
                             <TextField
+                                error={errorEmail}
                                 margin="normal"
+                                onBlur={()=> inputForm.userMail === "" && setErrorEmail(false)}
                                 required
                                 fullWidth
                                 label="Email Address"
                                 name="userMail"
                                 autoComplete="email"
                                 autoFocus
-                                onChange={handleChange}
+                                onChange={handleEmailChange}
                                 value={inputForm.userMail}
                                 type="email"
                                 disabled={loading}
@@ -107,6 +121,7 @@ const SignUpPage = () => {
                                 value={inputForm.userPass}
                                 disabled={loading}
                             />
+                            <PasswordMeter password={inputForm.userPass} />
                             <Button
                                 type="submit"
                                 fullWidth

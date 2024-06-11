@@ -16,7 +16,7 @@ const PanelChart = ({ dateVal, waterVal = [], sensorVal = [] }) => {
                 <Typography variant="h6">Date</Typography>
                 <Typography variant="h5">{dateVal}</Typography>
             </Box>
-            <Box sx={{ my: 1, width: '100%', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <Box sx={{ my: 1, width: '100%', display: 'flex', alignItems: 'center', flexDirection: 'column', bgcolor: "white", borderRadius: "5px", boxShadow: 1 }}>
                 <Typography variant="h6">Watering</Typography>
                 <Box sx={{ width: '100%', height: 300 }}>
                     <LineChart
@@ -27,7 +27,7 @@ const PanelChart = ({ dateVal, waterVal = [], sensorVal = [] }) => {
                     />
                 </Box>
             </Box>
-            <Box sx={{ my: 1, width: '100%', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <Box sx={{ my: 1, width: '100%', display: 'flex', alignItems: 'center', flexDirection: 'column', bgcolor: "white", borderRadius: "5px", boxShadow: 1 }}>
                 <Typography variant="h6">Soil Sensor</Typography>
                 <Box sx={{ width: '100%', height: 300 }}>
                     <LineChart
@@ -39,7 +39,7 @@ const PanelChart = ({ dateVal, waterVal = [], sensorVal = [] }) => {
                     />
                 </Box>
             </Box>
-            <Box sx={{ my: 1, width: '100%', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <Box sx={{ my: 1, width: '100%', display: 'flex', alignItems: 'center', flexDirection: 'column', bgcolor: "white", borderRadius: "5px", boxShadow: 1 }}>
                 <Typography variant="h6">Water Storage</Typography>
                 <Box sx={{ width: '100%', height: 300 }}>
                     <LineChart
@@ -50,7 +50,7 @@ const PanelChart = ({ dateVal, waterVal = [], sensorVal = [] }) => {
                     />
                 </Box>
             </Box>
-            <Box sx={{ my: 1, width: '100%', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <Box sx={{ my: 1, width: '100%', display: 'flex', alignItems: 'center', flexDirection: 'column', bgcolor: "white", borderRadius: "5px", boxShadow: 1 }}>
                 <Typography variant="h6">Light Sensor</Typography>
                 <Box sx={{ width: '100%', height: 300 }}>
                     <LineChart
@@ -61,7 +61,7 @@ const PanelChart = ({ dateVal, waterVal = [], sensorVal = [] }) => {
                     />
                 </Box>
             </Box>
-            <Box sx={{ my: 1, width: '100%', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <Box sx={{ my: 1, width: '100%', display: 'flex', alignItems: 'center', flexDirection: 'column', bgcolor: "white", borderRadius: "5px", boxShadow: 1 }}>
                 <Typography variant="h6">Rain Sensor</Typography>
                 <Box sx={{ width: '100%', height: 300 }}>
                     <LineChart
@@ -79,7 +79,7 @@ const PanelChart = ({ dateVal, waterVal = [], sensorVal = [] }) => {
 PanelChart.propTypes = {
     dateVal: PropTypes.string,
     waterVal: PropTypes.array,
-    sensorVal:PropTypes.array
+    sensorVal: PropTypes.array
 }
 
 export default PanelChart

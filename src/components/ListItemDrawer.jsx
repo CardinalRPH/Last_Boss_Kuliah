@@ -1,4 +1,4 @@
-import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRightFromBracket, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import PropTypes from 'prop-types';
@@ -38,5 +38,20 @@ export const SignOutListItems = ({ onClick }) => {
 }
 
 SignOutListItems.propTypes = {
+    onClick: PropTypes.func
+}
+
+export const AboutListItem = ({ onClick }) => {
+    return (
+        <ListItemButton onClick={onClick}>
+            <ListItemIcon>
+                <FontAwesomeIcon icon={faCircleInfo} size="xl" />
+            </ListItemIcon>
+            <ListItemText primary="About" />
+        </ListItemButton>
+    )
+}
+
+AboutListItem.propTypes = {
     onClick: PropTypes.func
 }

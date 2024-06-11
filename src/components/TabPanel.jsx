@@ -36,15 +36,15 @@ const a11yProps = (index) => {
     };
 }
 
-const TabPanel = ({ data }) => {
-    const [value, setValue] = useState(0);
+const TabPanel = ({ data, selTab=0 }) => {
+    const [value, setValue] = useState(selTab);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
     return (
         <>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', display:"flex", justifyContent:"center" }}>
                 <Tabs value={value} onChange={handleChange} scrollButtons="auto" variant="scrollable">
                     <Tab label="Monday" {...a11yProps(0)} />
                     <Tab label="Tuesday" {...a11yProps(1)} />
@@ -58,49 +58,49 @@ const TabPanel = ({ data }) => {
             <CustomTabPanel value={value} index={0}>
                 <PanelChart
                     dateVal={data?.sensorsVal?.Monday.date}
-                    waterVal={data?.watersVal?.Monday.data || []}
+                    waterVal={data?.waterVal?.Monday.data || []}
                     sensorVal={data?.sensorsVal?.Monday.data || []}
                 />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
                 <PanelChart
                     dateVal={data?.sensorsVal?.Tuesday.date || data?.waterVal?.Tuesday.date}
-                    waterVal={data?.watersVal?.Tuesday.data || []}
+                    waterVal={data?.waterVal?.Tuesday.data || []}
                     sensorVal={data?.sensorsVal?.Tuesday.data || []}
                 />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
                 <PanelChart
                     dateVal={data?.sensorsVal?.Wednesday.date || data?.waterVal?.Wednesday.date}
-                    waterVal={data?.watersVal?.Wednesday.data || []}
+                    waterVal={data?.waterVal?.Wednesday.data || []}
                     sensorVal={data?.sensorsVal?.Wednesday.data || []}
                 />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={3}>
                 <PanelChart
                     dateVal={data?.sensorsVal?.Thursday.date || data?.waterVal?.Thursday.date}
-                    waterVal={data?.watersVal?.Thursday.data || []}
+                    waterVal={data?.waterVal?.Thursday.data || []}
                     sensorVal={data?.sensorsVal?.Thursday.data || []}
                 />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={4}>
                 <PanelChart
                     dateVal={data?.sensorsVal?.Friday.date || data?.waterVal?.Friday.date}
-                    waterVal={data?.watersVal?.Friday.data || []}
+                    waterVal={data?.waterVal?.Friday.data || []}
                     sensorVal={data?.sensorsVal?.Friday.data || []}
                 />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={5}>
                 <PanelChart
                     dateVal={data?.sensorsVal?.Saturday.date || data?.waterVal?.Saturday.date}
-                    waterVal={data?.watersVal?.Saturday.data || []}
+                    waterVal={data?.waterVal?.Saturday.data || []}
                     sensorVal={data?.sensorsVal?.Saturday.data || []}
                 />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={6}>
                 <PanelChart
                     dateVal={data?.sensorsVal?.Sunday.date|| data?.waterVal?.Sunday.date}
-                    waterVal={data?.watersVal?.Sunday.data || []}
+                    waterVal={data?.waterVal?.Sunday.data || []}
                     sensorVal={data?.sensorsVal?.Sunday.data || []}
                 />
             </CustomTabPanel>
@@ -110,6 +110,7 @@ const TabPanel = ({ data }) => {
 
 TabPanel.propTypes = {
     data: PropTypes.object,
+    selTab:PropTypes.number
 }
 
 export default TabPanel

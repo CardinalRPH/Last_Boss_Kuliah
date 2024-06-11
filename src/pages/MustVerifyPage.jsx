@@ -21,11 +21,11 @@ const MustVerifyPage = () => {
         btnLogout: false
     })
     const { seconds: secondsState, minutes: minutesState } = useSelector(state => state.countD)
-    const { data: dataCheck, error: errorCheck, loading: loadingCheck, execute: executeCheck } = useGet('/check-verify')
+    const { data: dataCheck, error: errorCheck, loading: loadingCheck, execute: executeCheck } = useGet('check-verify', true, false)
     const { data, execute, loading, error } = usePost("resend-verify")
     const { isAuthenticated, payload, isValid } = useSelector(state => state.auth)
     const { isSignUp } = useSelector(state => state.valid)
-    const { data: dataLogout, loading: loadingLogOut, error: errorlogOut, execute: executeLogOut } = useDelete('/logOut')
+    const { data: dataLogout, loading: loadingLogOut, error: errorlogOut, execute: executeLogOut } = useDelete('logOut')
     const [retryContent, setRetryContent] = useState(
         <>
             <Typography sx={{ mx: 1 }}>
@@ -69,7 +69,6 @@ const MustVerifyPage = () => {
         })
     }
 
-
     useEffect(() => {
         if (data) {
             //do countdown
@@ -84,9 +83,11 @@ const MustVerifyPage = () => {
             setDisableBtn(prevState => ({
                 ...prevState, btnLogout: false
             }))
-            if (dataCheck.data.valid) {
-                dispatch(authAction.updateState({ valid: dataCheck?.data.valid || false }))
-                navigate('/dashboard', { replace: true })
+            if (dataCheck?.data) {
+                dispatch(authAction.updateState({ valid: dataCheck?.data.valid || false, wsPath: dataCheck?.data?.wsPath }))
+                if (dataCheck?.data.valid) {
+                    navigate('/dashboard', { replace: true })
+                }
             }
         }
         if (dataLogout) {
@@ -96,7 +97,7 @@ const MustVerifyPage = () => {
             navigate('/signin', { replace: true })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data, dataCheck, dataLogout, isValid])
+    }, [data, dataLogout, isValid, dataCheck])
 
     useEffect(() => {
         if (error) {
@@ -133,15 +134,15 @@ const MustVerifyPage = () => {
     }, [error, errorCheck, errorlogOut])
 
     useEffect(() => {
-        if (!isSignUp)
+        if (!isSignUp) {
             executeCheck({
                 params: {
-                    userMail: payload.email
+                    userMail: payload?.email
                 }
             })
-            document.title = `Access Block`
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        }
+        document.title = `Access Block`
+    }, [executeCheck, isSignUp, payload.email])
 
     useEffect(() => {
         if (secondsState === 0 && minutesState === 0) {
