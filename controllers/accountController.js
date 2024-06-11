@@ -1,5 +1,6 @@
 import { addUpdateUserToken, deleteUserToken, getUserToken } from "../models/firestoreToken.js"
 import { addNewUser, deleteUser, getUserbyId, updateUser, updateUserVerify } from "../models/firestoreUser.js"
+import { encrypt } from "../security/aesManager.js"
 import { Bcompare, Bhash } from "../security/bcryptPassword.js"
 import generateOTP from "../security/generateOTP.js"
 import { generateToken, verifyToken } from "../security/jwtManager.js"
@@ -64,9 +65,13 @@ export const userAccountPost = async (req, res) => {
         const expirationDate = new Date(Date.now() + expireHours);
         req.session.cookie.expires = expirationDate;
         req.session.cookie.maxAge = expireHours;
+
         res.status(200).json({
             data: {
-                name: userName, email: userMail, valid: false
+                name: userName,
+                email: userMail,
+                valid: false,
+
             }
         })
     } catch (error) {
@@ -295,10 +300,17 @@ export const userVerifyGet = async (req, res) => {
         } else {
             req.session.destroy()
         }
+        const encryptedPath = encrypt(email)
+        const wstoken = generateToken({
+            user: email,
+            deviceId: null
+        }, false, {})
 
         res.status(200).json({
             data: {
-                email, valid: true
+                email,
+                valid: true,
+                wsPath: `/app/${encryptedPath}/${wstoken}`
             }
         })
     } catch (error) {
@@ -341,10 +353,18 @@ export const userCheckVerify = async (req, res) => {
         if (req.session.userData) {
             req.session.userData = { ...req.session.userData, isVerified: true }
         }
+
+        const encryptedPath = encrypt(existsUser.data.email)
+        const token = generateToken({
+            user: existsUser.data.email,
+            deviceId: null
+        }, false, {})
+
         res.status(200).json({
             data: {
                 email: userMail,
-                valid: existsUser.data.isVerified
+                valid: existsUser.data.isVerified,
+                wsPath: existsUser.data.isVerified ?`/app/${encryptedPath}/${token}` : null
             }
         })
     } catch (error) {

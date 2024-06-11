@@ -6,6 +6,7 @@ import { saveDeviceWatering } from "../utilities/serverDeviceControll.js"
 import saveValueInInterval from "../utilities/saveValueInInterval.js"
 import { getUserDevicebyId } from "../models/firestoreDevice.js"
 import { getUserbyId } from "../models/firestoreUser.js"
+import { saveValueInZero } from "../utilities/saveValueInZero.js"
 
 export default (server) => {
     const wsServer = new WebSocketServer({ noServer: true })
@@ -61,8 +62,8 @@ export default (server) => {
         }
         const saveInterval = new saveValueInInterval()
         const saveDeviceWater = new saveDeviceWatering()
+        const saveZero = new saveValueInZero()
         const findRoom = userSockets.find(item => item.roomId === decode)
-        console.log(findRoom);
         if (user && deviceId) {
             const existDevice = await getUserDevicebyId({ email: user, deviceId })
             if (!existDevice) {
@@ -75,6 +76,7 @@ export default (server) => {
                 findRoom?.member.push({ id: deviceId, ws: ws })
             }
             //do interval saveData
+            saveZero.start(decode, deviceId)
             saveInterval.saveValue(decode, deviceId)
         } else if (user && deviceId === null) {
             const existUser = await getUserbyId({ email: user })
@@ -92,6 +94,7 @@ export default (server) => {
             return
         }
 
+        console.log(findRoom);
         ws.on('pong', () => {
             ws.send(JSON.stringify({ type: 'pong', message: 'ok' }))
         })
@@ -153,6 +156,7 @@ export default (server) => {
                     userSockets[roomIndex].member.splice(memberIndex, 1)
                 }
                 if (user && deviceId) {
+                    saveZero.stop()
                     saveInterval.setBreaker(true)
                     saveDeviceWater.setIsWatering(false)
                 }
@@ -174,6 +178,7 @@ export default (server) => {
                     userSockets[roomIndex].member.splice(memberIndex, 1)
                 }
                 if (user && deviceId) {
+                    saveZero.stop()
                     saveInterval.setBreaker(true)
                     saveDeviceWater.setIsWatering(false)
                 }
