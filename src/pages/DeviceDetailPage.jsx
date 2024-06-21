@@ -83,6 +83,7 @@ const DeviceDetailPage = () => {
                 }
             })
         }
+
         document.title = `Detail Device`
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -132,7 +133,9 @@ const DeviceDetailPage = () => {
                             <Typography variant="h6">Device Report</Typography>
                         </Grid>
                         <Grid item xs={12} >
-                            <TabPanel data={mainData} selTab={daysOfWeek.indexOf(day)-1} />
+                            <TabPanel data={mainData} selTab={daysOfWeek.indexOf(day)-1 <0? daysOfWeek.indexOf(day)+6: daysOfWeek.indexOf(day)-1} />
+
+
                         </Grid>
                     </Grid>
             }
