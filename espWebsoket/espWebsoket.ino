@@ -50,9 +50,15 @@ void setup()
 {
   // put your setup code here, to run once:
   Serial.begin(9600);
+
+  // setup pin and value
+  snReader.setupSensorPin(RAIN_PIN_DO, SOIL_PIN_1, SOIL_PIN_2, ULTRA_TRIG, ULTRA_ECHO, LIGHT_PIN, ANALOG_PIN);
+  snReader.setupTankValue(emptyTankDistance, fullTankDistance);
+  outDevConn.setupOutputPin(BUZZ_PIN, RELAY_PIN);
+
   // setup Connection
   initConnection(ssid, wifiPassword, email, password, host, port);
-  if (connState.getHttpResponseCode() > 0)
+  if (WiFi.status() == WL_CONNECTED)
   {
     configTime(timeZone, dst, "pool.ntp.org", "time.nist.gov");
   }
@@ -60,10 +66,6 @@ void setup()
   pinMode(BUILTIN_LED, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
 
-  // setup pin and value
-  snReader.setupSensorPin(RAIN_PIN_DO, SOIL_PIN_1, SOIL_PIN_2, ULTRA_TRIG, ULTRA_ECHO, LIGHT_PIN, ANALOG_PIN);
-  snReader.setupTankValue(emptyTankDistance, fullTankDistance);
-  outDevConn.setupOutputPin(BUZZ_PIN, RELAY_PIN);
   // fuzzy declaration
   fyLogic.initFuzzy();
   fyLogic.implementFuzzyRules();
@@ -75,6 +77,10 @@ void loop()
   if (connState.getHttpResponseCode() > 0)
   {
     wsLoop();
+  }
+
+  if (WiFi.status() == WL_CONNECTED)
+  {
     // get current tiime
     time_t now = time(nullptr);
     struct tm *p_tm = localtime(&now);
@@ -84,7 +90,7 @@ void loop()
 
   unsigned long currentMillis = millis();
   // Serial.println(hours);
-  if (hours >= 5 && hours <= 19 && snReader.isRaining() ==false && snReader.readTankValue() >= 30)
+  if (hours >= 5 && hours <= 19 && snReader.isRaining() == false && snReader.readTankValue() >= 30)
   {
     if (currentMillis - lastFuzzyTime >= fuzzyInterval)
     {
