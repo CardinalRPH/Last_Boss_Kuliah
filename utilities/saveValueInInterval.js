@@ -15,6 +15,7 @@ export default class saveValueInInterval {
             }
             this.intervalTimer = setInterval(async () => {
                 if (this.deviceData) {
+                    console.log(`Saving on ${deviceId}`)
                     const { soilSensorTop, soilSensorBot, waterSensor, lightSensor, rainSensor } = this.deviceData
                     await saveDeviceSensorUpdate(userMail, deviceId, { soilSensorBot, soilSensorTop, waterSensor, lightSensor, rainSensor })
                 }
@@ -34,6 +35,7 @@ export default class saveValueInInterval {
     setBreaker(value = false) {
         this.breaker = value;
         if (this.breaker === true && this.intervalTimer) {
+            console.log("Device Connection CLosed")
             clearInterval(this.intervalTimer);
             this.intervalTimer = null;
         }
