@@ -8,6 +8,7 @@ import { faCircleXmark } from "@fortawesome/free-regular-svg-icons"
 import AlertMain from "../components/AlertMain"
 import { useDispatch } from "react-redux"
 import { uForgetAction } from "../stores/uForgetState"
+import PasswordMeter from "../components/PasswordMeter"
 
 const PassResetPage = () => {
     const { token } = useParams()
@@ -45,7 +46,7 @@ const PassResetPage = () => {
             dispatch(uForgetAction.setForgetResetScss(true))
             navigate('/reset-success')
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dataGet, dataPut])
 
     useEffect(() => {
@@ -89,7 +90,10 @@ const PassResetPage = () => {
                             <Typography>Please enter your new password below.</Typography>
                             <Typography>for Email : <b>{email}</b>.</Typography>
                             <Typography> Be sure to use a combination of letters, numbers, and special characters for better security</Typography>
-                            <TextFieldPassword disabled={loadingPut} value={passForm} onChange={(e) => setPassForm(e.target.value)} label="New Password" containerSx={{ my: 2, width: '100%' }} required />
+                            <Box sx={{ width: "100%" }}>
+                                <TextFieldPassword disabled={loadingPut} value={passForm} onChange={(e) => setPassForm(e.target.value)} label="New Password" containerSx={{ my: 2, width: '100%' }} required />
+                                <PasswordMeter password={passForm} />
+                            </Box>
                             <Button disabled={loadingPut} type="submit" sx={{ my: 2 }} variant="contained">Change Password</Button>
                         </> :
                         <>
