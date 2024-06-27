@@ -107,7 +107,7 @@ const DeviceDetailPage = () => {
                         </Grid>
                         {/* from DB */}
                         <Grid item xs={12} md={3}>
-                            <DetailPageLastWaterCard value={`${day}, ${mainData?.waterVal?.[day]?.data[mainData?.waterVal?.[day]?.data.length - 1] || '00:00'}`} />
+                            <DetailPageLastWaterCard value={`${day}, ${mainData?.waterVal?.[day]?.data[mainData?.waterVal?.[day]?.data.length - 1]?.time || '00:00'}`} />
                         </Grid>
                         {/* from webSocket */}
                         <Grid item xs={12} md={3}>
@@ -133,9 +133,7 @@ const DeviceDetailPage = () => {
                             <Typography variant="h6">Device Report</Typography>
                         </Grid>
                         <Grid item xs={12} >
-                            <TabPanel data={mainData} selTab={daysOfWeek.indexOf(day)-1 <0? daysOfWeek.indexOf(day)+6: daysOfWeek.indexOf(day)-1} />
-
-
+                            <TabPanel data={mainData} selTab={daysOfWeek.indexOf(day) - 1 < 0 ? daysOfWeek.indexOf(day) + 6 : daysOfWeek.indexOf(day) - 1} />
                         </Grid>
                     </Grid>
             }

@@ -2,14 +2,7 @@ import { Box, Typography } from "@mui/material"
 import { LineChart } from "@mui/x-charts"
 import PropTypes from 'prop-types';
 
-
-const timeArray = ['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00']
-
 const PanelChart = ({ dateVal, waterVal = [], sensorVal = [] }) => {
-
-    const combinedTime = [...new Set([...waterVal, ...timeArray])].sort()
-    const wateringTF = combinedTime.map(value => waterVal.find(value2 => value2 === value) ? 1 : 0)
-
     return (
         <>
             <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', flexDirection: 'column', my: 1 }}>
@@ -21,9 +14,9 @@ const PanelChart = ({ dateVal, waterVal = [], sensorVal = [] }) => {
                 <Box sx={{ width: '100%', height: 300 }}>
                     <LineChart
                         series={[
-                            { data: wateringTF, label: 'Time' },
+                            { data: waterVal.map(value => value.pumpSecond), label: 'Pump Time' },
                         ]}
-                        xAxis={[{ scaleType: 'point', data: combinedTime }]}
+                        xAxis={[{ scaleType: 'point', data: waterVal.map(value => value.time) }]}
                     />
                 </Box>
             </Box>
