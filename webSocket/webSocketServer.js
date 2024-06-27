@@ -122,7 +122,7 @@ export default (server) => {
 
                     if (data?.waterEvent === true) {
                         //save watering into db
-                        await saveDeviceWater.saveWatering(decode, deviceId)
+                        await saveDeviceWater.saveWatering(decode, deviceId, data?.pumpSecond)
                     } else {
                         saveDeviceWater.setIsWatering(false)
                     }

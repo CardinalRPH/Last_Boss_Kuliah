@@ -6,7 +6,7 @@ export class saveDeviceWatering {
         this.isWatering = false
     }
 
-    async saveWatering(userMail, deviceId) {
+    async saveWatering(userMail, deviceId, pumpSecond) {
         if (this.isWatering === false) {
             const { day, date, time } = getCurrentTime()
             try {
@@ -19,12 +19,12 @@ export class saveDeviceWatering {
                         const { date: dbDate } = waterVal[day]
                         if (dbDate === date) {
                             const updatedWaterVal = { ...waterVal }
-                            updatedWaterVal[day]?.data.push(time)
+                            updatedWaterVal[day]?.data.push({time, pumpSecond})
                             return { waterVal: updatedWaterVal }
                         } else {
                             const updatedWaterVal = { ...waterVal }
                             updatedWaterVal[day].date = date
-                            updatedWaterVal[day].data = [time]
+                            updatedWaterVal[day].data = [{time, pumpSecond}]
                             return { waterVal: updatedWaterVal }
                         }
 
@@ -67,7 +67,7 @@ export const saveDeviceSensorUpdate = async (userMail, deviceId, { soilSensorTop
                     updatedSensorVal[day].date = date
 
                     updatedSensorVal[day].data = [{
-                        soilSensorTop, soilSensorBot, waterSensor, lightSensor, rainSensor, time
+                        soilSensorTop, soilSensorBot, waterSensor, lightSensor, rainSensor, time, pumpSecond
                     }]
                     return { sensorsVal: updatedSensorVal }
                 }
