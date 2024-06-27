@@ -51,11 +51,6 @@ void setup()
   // put your setup code here, to run once:
   Serial.begin(9600);
 
-  // setup pin and value
-  snReader.setupSensorPin(RAIN_PIN_DO, SOIL_PIN_1, SOIL_PIN_2, ULTRA_TRIG, ULTRA_ECHO, LIGHT_PIN, ANALOG_PIN);
-  snReader.setupTankValue(emptyTankDistance, fullTankDistance);
-  outDevConn.setupOutputPin(BUZZ_PIN, RELAY_PIN);
-
   // setup Connection
   initConnection(ssid, wifiPassword, email, password, host, port);
   if (WiFi.status() == WL_CONNECTED)
@@ -65,6 +60,11 @@ void setup()
 
   pinMode(BUILTIN_LED, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
+
+  // setup pin and value
+  snReader.setupSensorPin(RAIN_PIN_DO, SOIL_PIN_1, SOIL_PIN_2, ULTRA_TRIG, ULTRA_ECHO, LIGHT_PIN, ANALOG_PIN);
+  snReader.setupTankValue(emptyTankDistance, fullTankDistance);
+  outDevConn.setupOutputPin(BUZZ_PIN, RELAY_PIN);
 
   // fuzzy declaration
   fyLogic.initFuzzy();
@@ -90,6 +90,9 @@ void loop()
 
   unsigned long currentMillis = millis();
   // Serial.println(hours);
+  // Serial.println(snReader.isRaining());
+  // Serial.println(snReader.readTankValue());
+
   if (hours >= 5 && hours <= 19 && snReader.isRaining() == false && snReader.readTankValue() >= 30)
   {
     if (currentMillis - lastFuzzyTime >= fuzzyInterval)
@@ -112,7 +115,7 @@ void loop()
     if (connState.getWSConnected() == true)
     {
       // Serial.println(snReader.readSoil1());
-      handleSentMsgActivity(waterHandler.getWatering(), snReader.readSoil1(), snReader.readSoil2(), snReader.readTankValue(), snReader.readLightValue(), snReader.isRaining()); // Panggil fungsi untuk mengirim pesan
+      handleSentMsgActivity(waterHandler.getWatering(), snReader.readSoil1(), snReader.readSoil2(), snReader.readTankValue(), snReader.readLightValue(), snReader.isRaining(), waterHandler.getWateringTime()); // Panggil fungsi untuk mengirim pesan
     }
     lastMsgTime = currentMillis; // Perbarui waktu terakhir pesan dikirim
   }

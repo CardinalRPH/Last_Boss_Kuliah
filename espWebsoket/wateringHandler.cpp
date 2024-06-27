@@ -37,3 +37,7 @@ bool wateringHandler::getWatering()
     }
     return false;
 }
+
+int wateringHandler::getWateringTime() {
+    return waterTime;
+}

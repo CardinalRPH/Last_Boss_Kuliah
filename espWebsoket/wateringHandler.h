@@ -12,6 +12,7 @@ private:
 public:
     void setWatering(bool state, int wTime);
     bool getWatering();
+    int getWateringTime();
 };
 
 #endif

@@ -1,7 +1,7 @@
 #include "sentMsgHandler.h"
 #include "wsManager.h"
 
-void handleSentMsgActivity(bool waterEvent, float readSoil1, float readSoil2, int readTankValue, float readLightValue, bool isRaining)
+void handleSentMsgActivity(bool waterEvent, float readSoil1, float readSoil2, int readTankValue, float readLightValue, bool isRaining, int waterMlSecond)
 {
     JsonDocument docToSent;
 
@@ -17,6 +17,7 @@ void handleSentMsgActivity(bool waterEvent, float readSoil1, float readSoil2, in
     obj2["waterSensor"] = readTankValue;
     obj2["lightSensor"] = readLightValue;
     obj2["rainSensor"] = isRaining;
+    obj2["pumpSecond"] = waterMlSecond / 1000;
 
     String jsonString;
     serializeJson(docToSent, jsonString);
