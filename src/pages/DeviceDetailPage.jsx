@@ -107,7 +107,7 @@ const DeviceDetailPage = () => {
                         </Grid>
                         {/* from DB */}
                         <Grid item xs={12} md={3}>
-                            <DetailPageLastWaterCard value={`${day}, ${mainData?.waterVal[day].data.filter(wVal => wVal.pumpSecond !== 0)[mainData.waterVal[day].data.filter(wVal => wVal.pumpSecond !== 0).length - 1]?.time || 'No'}`} />
+                            <DetailPageLastWaterCard value={`${day}, ${mainData?.waterVal?.[day]?.data.filter(wVal => wVal.pumpSecond !== 0)[mainData.waterVal?.[day]?.data.filter(wVal => wVal.pumpSecond !== 0).length - 1]?.time || 'No'}`} />
                         </Grid>
                         {/* from webSocket */}
                         <Grid item xs={12} md={3}>

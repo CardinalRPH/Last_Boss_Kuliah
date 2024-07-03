@@ -101,7 +101,7 @@ const DashboardPage = () => {
               key={value.deviceId}
               deviceName={value.name}
               lastWaterDay={day}
-              lastWaterHour={value.waterVal[day].data.filter(wVal => wVal.pumpSecond !== 0)[value.waterVal[day].data.filter(wVal => wVal.pumpSecond !== 0).length - 1]?.time || 'No'}
+              lastWaterHour={value.waterVal?.[day]?.data.filter(wVal => wVal.pumpSecond !== 0)[value.waterVal?.[day]?.data.filter(wVal => wVal.pumpSecond !== 0).length - 1]?.time || 'No'}
               //from ws
               isRain={JSON.parse(wsMessage?.find(fVal => JSON.parse(fVal.data).Id === value.deviceId)?.data || '{"rainSensor":false}').rainSensor}
               waterStorage={JSON.parse(wsMessage?.find(fVal => JSON.parse(fVal.data).Id === value.deviceId)?.data || '{"waterSensor":0}').waterSensor}
