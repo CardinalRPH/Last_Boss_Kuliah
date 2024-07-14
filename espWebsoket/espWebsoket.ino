@@ -7,15 +7,15 @@
 // #include "wateringHandler.h"
 
 // Wifi Setup
-const char *ssid = "PARZ!VAL X";
-const char *wifiPassword = "batusarino1";
+const char *ssid = "hehe";
+const char *wifiPassword = "dxdiag12";
 
 // User Account
 const String email = "koneksigagal63@gmail.com";
 const String password = "koneksigagal63";
 
 // insert Host and port
-const String host = "192.168.1.11";
+const String host = "192.168.172.237";
 const int port = 5000;
 
 // setup pin use GPIO
