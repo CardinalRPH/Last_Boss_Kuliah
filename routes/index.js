@@ -27,8 +27,8 @@ router.post('/userLogin', (req, res, next) => unloggedMid(req, res, next), userA
 
 //accountController
 router.post('/createAccount', (req, res, next) => unloggedMid(req, res, next), rateLimit({
-    windowMs: 2 * 60 * 1000, //2 minutes
-    limit: 1,
+    windowMs: 10 * 1000, //10 seconds
+    limit: 2,
     handler: (req, res) => {
         res.status(429).json({
             error: "Too many requests, please try again later.",
@@ -37,8 +37,8 @@ router.post('/createAccount', (req, res, next) => unloggedMid(req, res, next), r
 }), userAccountPost)
 router.get('/verifyAccount', (req, res, next) => unloggedMid(req, res, next), userVerifyGet)
 router.post('/resend-verify', (req, res, next) => loggedMid(req, res, next, true), rateLimit({
-    windowMs: 2 * 60 * 1000, //2 minutes
-    limit: 1,
+    windowMs: 10 * 1000, //10 seconds
+    limit: 2,
     handler: (req, res) => {
         res.status(429).json({
             error: "Too many requests, please try again later.",
